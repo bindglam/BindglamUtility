@@ -1,4 +1,4 @@
-package com.bindglam.utility.texts;
+package com.bindglam.utility.text;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;

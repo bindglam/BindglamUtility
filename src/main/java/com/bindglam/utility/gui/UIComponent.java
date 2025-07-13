@@ -1,4 +1,4 @@
-package com.bindglam.utility.guis;
+package com.bindglam.utility.gui;
 
 import com.bindglam.utility.BindglamUtility;
 import net.kyori.adventure.text.Component;

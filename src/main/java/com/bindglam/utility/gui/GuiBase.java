@@ -1,7 +1,7 @@
-package com.bindglam.utility.guis;
+package com.bindglam.utility.gui;
 
 import com.bindglam.utility.BindglamUtility;
-import com.bindglam.utility.texts.ComponentUtil;
+import com.bindglam.utility.text.ComponentUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
