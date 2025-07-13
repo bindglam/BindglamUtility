@@ -1,0 +1,7 @@
+name: BindglamUtility
+main: com.bindglam.utility.BindglamUtility
+version: 1.0
+api-version: 1.21
+softdepend:
+  - ItemsAdder
+  - Nexo
