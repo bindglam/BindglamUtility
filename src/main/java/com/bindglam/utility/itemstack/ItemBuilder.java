@@ -64,6 +64,13 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder hideTooltip() {
+        ItemMeta meta = itemStack.getItemMeta();
+        meta.setHideTooltip(true);
+        itemStack.setItemMeta(meta);
+        return this;
+    }
+
     public @NotNull ItemStack getItemStack() {
         return this.itemStack;
     }
