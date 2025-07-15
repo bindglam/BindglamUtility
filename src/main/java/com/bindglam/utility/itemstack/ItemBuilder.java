@@ -3,10 +3,12 @@ package com.bindglam.utility.itemstack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +25,10 @@ public class ItemBuilder {
 
     public ItemBuilder(@NotNull ItemType type) {
         this.itemStack = type.createItemStack();
+    }
+
+    public ItemBuilder(@NotNull ItemStack itemStack) {
+        this.itemStack = itemStack.clone();
     }
 
     public ItemBuilder amount(int amount) {
@@ -73,5 +79,13 @@ public class ItemBuilder {
 
     public @NotNull ItemStack getItemStack() {
         return this.itemStack;
+    }
+
+    public static ItemBuilder createHead(OfflinePlayer player){
+        ItemStack headItem = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta meta = (SkullMeta) headItem.getItemMeta();
+        meta.setOwningPlayer(player);
+        headItem.setItemMeta(meta);
+        return new ItemBuilder(headItem);
     }
 }
