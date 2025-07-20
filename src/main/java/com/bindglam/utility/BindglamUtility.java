@@ -3,6 +3,7 @@ package com.bindglam.utility;
 import com.bindglam.utility.compatibility.Compatibility;
 import com.bindglam.utility.compatibility.ItemsAdderCompatibility;
 import com.bindglam.utility.compatibility.NexoCompatibility;
+import com.bindglam.utility.pluginmessaging.PluginMessenger;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,6 +11,7 @@ public class BindglamUtility extends JavaPlugin {
     private static BindglamUtility instance;
 
     private Compatibility compatibility;
+    private PluginMessenger pluginMessenger;
 
     @Override
     public void onEnable() {
@@ -24,6 +26,10 @@ public class BindglamUtility extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        pluginMessenger = new PluginMessenger();
+
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", pluginMessenger);
 
         getLogger().info("""
                 
@@ -46,7 +52,19 @@ public class BindglamUtility extends JavaPlugin {
         return compatibility;
     }
 
+    public PluginMessenger getPluginMessenger() {
+        return pluginMessenger;
+    }
+
     public static @NotNull BindglamUtility getInstance() {
         return instance;
+    }
+
+    public static Compatibility compatibility() {
+        return getInstance().getCompatibility();
+    }
+
+    public static PluginMessenger pluginMessenger() {
+        return getInstance().getPluginMessenger();
     }
 }
