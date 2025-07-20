@@ -17,8 +17,10 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 쉽고 빠르게 인벤토리 Gui를 생성하는 클래스
@@ -27,7 +29,8 @@ public abstract class GuiBase implements InventoryHolder, Listener {
     private Inventory inv;
 
     private final Component title;
-    private final HashMap<String, UIComponent> uiComponents = new HashMap<>();
+    private final Map<String, UIComponent> uiComponents = new HashMap<>();
+    private final Map<Integer, Object> itemData = new HashMap<>();
 
     protected int taskID = -1;
 
@@ -103,7 +106,7 @@ public abstract class GuiBase implements InventoryHolder, Listener {
         return inv;
     }
 
-    public HashMap<String, UIComponent> getUIComponents() {
+    public Map<String, UIComponent> getUIComponents() {
         return uiComponents;
     }
 
@@ -131,5 +134,17 @@ public abstract class GuiBase implements InventoryHolder, Listener {
         inv = newInventory;
 
         isUpdating = false;
+    }
+
+    public @Nullable Object getItemData(int slot) {
+        return itemData.get(slot);
+    }
+
+    public void setItemData(int slot, Object data) {
+        itemData.put(slot, data);
+    }
+
+    public void removeItemData(int slot) {
+        itemData.remove(slot);
     }
 }

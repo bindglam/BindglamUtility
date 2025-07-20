@@ -49,8 +49,8 @@ public class PluginMessenger implements PluginMessageListener {
             MessageQueue msgData = iterator.next();
 
             if(msgData.cmd().equals(subChannel)) {
-                msgData.consumer().accept(in);
                 queue.remove(i);
+                msgData.consumer().accept(in);
                 break;
             }
             i++;
