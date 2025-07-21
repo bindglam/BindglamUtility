@@ -1,6 +1,7 @@
 package com.bindglam.utility.gui;
 
 import com.bindglam.utility.BindglamUtility;
+import com.bindglam.utility.events.BindglamInventoryCloseEvent;
 import com.bindglam.utility.text.ComponentUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -57,7 +58,11 @@ public abstract class GuiBase implements InventoryHolder, Listener {
     public void onClick(InventoryClickEvent event){
     }
 
+    @Deprecated
     public void onClose(InventoryCloseEvent event){
+    }
+
+    public void onClose(BindglamInventoryCloseEvent event){
     }
 
     public void onTick(){
@@ -89,12 +94,15 @@ public abstract class GuiBase implements InventoryHolder, Listener {
     }
 
     @EventHandler
-    public void onCloseEvent(InventoryCloseEvent event){
-        Player player = (Player) event.getPlayer();
+    public void onCloseEvent(BindglamInventoryCloseEvent event){
         Inventory inventory = event.getView().getTopInventory();
         if(inventory.getHolder(false) != this || isUpdating) return;
 
         onClose(event);
+        onClose(event);
+
+        if(event.isCancelled())
+            return;
 
         if(taskID != -1) Bukkit.getScheduler().cancelTask(taskID);
         Bukkit.getScheduler().runTaskLater(BindglamUtility.getInstance(), () -> ((Player) event.getPlayer()).updateInventory(), 1L);

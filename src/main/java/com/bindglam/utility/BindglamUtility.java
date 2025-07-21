@@ -3,6 +3,7 @@ package com.bindglam.utility;
 import com.bindglam.utility.compatibility.Compatibility;
 import com.bindglam.utility.compatibility.ItemsAdderCompatibility;
 import com.bindglam.utility.compatibility.NexoCompatibility;
+import com.bindglam.utility.listeners.PlayerListener;
 import com.bindglam.utility.pluginmessaging.PluginMessenger;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +31,8 @@ public class BindglamUtility extends JavaPlugin {
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", pluginMessenger);
+
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 
         getLogger().info("""
                 
