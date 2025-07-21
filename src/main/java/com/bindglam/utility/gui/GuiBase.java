@@ -98,7 +98,7 @@ public abstract class GuiBase implements InventoryHolder, Listener {
         Inventory inventory = event.getView().getTopInventory();
         if(inventory.getHolder(false) != this || isUpdating) return;
 
-        onClose(event);
+        onClose((InventoryCloseEvent) event);
         onClose(event);
 
         if(event.isCancelled())
