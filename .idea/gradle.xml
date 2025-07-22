@@ -9,6 +9,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/nms" />
+            <option value="$PROJECT_DIR$/nms/api" />
+            <option value="$PROJECT_DIR$/nms/v1_21_R3" />
           </set>
         </option>
       </GradleProjectSettings>

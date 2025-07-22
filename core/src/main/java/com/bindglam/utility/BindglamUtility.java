@@ -3,8 +3,13 @@ package com.bindglam.utility;
 import com.bindglam.utility.compatibility.Compatibility;
 import com.bindglam.utility.compatibility.ItemsAdderCompatibility;
 import com.bindglam.utility.compatibility.NexoCompatibility;
+import com.bindglam.utility.gui.GuiRenderer;
 import com.bindglam.utility.listeners.PlayerListener;
 import com.bindglam.utility.pluginmessaging.PluginMessenger;
+import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIBukkitConfig;
+import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.CommandPermission;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,9 +18,24 @@ public class BindglamUtility extends JavaPlugin {
 
     private Compatibility compatibility;
     private PluginMessenger pluginMessenger;
+    private GuiRenderer guiRenderer;
+
+    @Override
+    public void onLoad() {
+        CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
+
+        new CommandAPICommand("testgui")
+                .withPermission(CommandPermission.OP)
+                .executesPlayer((player, args) -> {
+                    new TestGui().open(player);
+                })
+                .register();
+    }
 
     @Override
     public void onEnable() {
+        CommandAPI.onEnable();
+
         instance = this;
 
         if(getServer().getPluginManager().isPluginEnabled("ItemsAdder")) {
@@ -28,6 +48,7 @@ public class BindglamUtility extends JavaPlugin {
             return;
         }
         pluginMessenger = new PluginMessenger();
+        guiRenderer = new com.bindglam.utility.nms.v1_21_R3.GuiRendererImpl();
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", pluginMessenger);
@@ -49,6 +70,7 @@ public class BindglamUtility extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        CommandAPI.onDisable();
     }
 
     public Compatibility getCompatibility() {
@@ -57,6 +79,10 @@ public class BindglamUtility extends JavaPlugin {
 
     public PluginMessenger getPluginMessenger() {
         return pluginMessenger;
+    }
+
+    public GuiRenderer getGuiRenderer() {
+        return guiRenderer;
     }
 
     public static @NotNull BindglamUtility getInstance() {
@@ -69,5 +95,9 @@ public class BindglamUtility extends JavaPlugin {
 
     public static PluginMessenger pluginMessenger() {
         return getInstance().getPluginMessenger();
+    }
+
+    public static GuiRenderer guiRenderer() {
+        return getInstance().getGuiRenderer();
     }
 }

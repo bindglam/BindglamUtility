@@ -21,14 +21,14 @@ import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 쉽고 빠르게 인벤토리 Gui를 생성하는 클래스
  */
 public abstract class GuiBase implements InventoryHolder, Listener {
     private Inventory inv;
+    private final Set<UUID> viewers = new HashSet<>();
 
     private final Component title;
     private final Map<String, UIComponent> uiComponents = new HashMap<>();
@@ -111,6 +111,7 @@ public abstract class GuiBase implements InventoryHolder, Listener {
 
     @EventHandler
     public void onCloseEvent(BindglamInventoryCloseEvent event){
+        Player player = (Player) event.getPlayer();
         Inventory inventory = event.getView().getTopInventory();
         if(inventory.getHolder(false) != this || isUpdating) return;
 
@@ -123,6 +124,14 @@ public abstract class GuiBase implements InventoryHolder, Listener {
         if(taskID != -1) Bukkit.getScheduler().cancelTask(taskID);
         Bukkit.getScheduler().runTaskLater(BindglamUtility.getInstance(), () -> ((Player) event.getPlayer()).updateInventory(), 1L);
         HandlerList.unregisterAll(this);
+        viewers.remove(player.getUniqueId());
+    }
+
+    public void open(Player player) {
+        player.openInventory(inv);
+        BindglamUtility.guiRenderer().sendFakeInventory(player, inv, title);
+
+        viewers.add(player.getUniqueId());
     }
 
     @Override
@@ -147,14 +156,9 @@ public abstract class GuiBase implements InventoryHolder, Listener {
             builtTitle = builtTitle.append(component.build());
         }
 
-        Inventory newInventory = Bukkit.createInventory(this, inv.getSize(), builtTitle);
-        newInventory.setContents(inv.getContents());
-        for (int i = inv.getViewers().size() - 1; i >= 0; i--) {
-            HumanEntity player = inv.getViewers().get(i);
-            //player.getOpenInventory().setTitle(LegacyComponentSerializer.legacySection().serialize(builtTitle));
-            player.openInventory(newInventory);
+        for(Player player : viewers.stream().map(Bukkit::getPlayer).toList()) {
+            BindglamUtility.guiRenderer().sendFakeInventory(player, inv, builtTitle);
         }
-        inv = newInventory;
 
         isUpdating = false;
     }
