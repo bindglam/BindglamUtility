@@ -2,6 +2,7 @@ package com.bindglam.utility.gui;
 
 import com.bindglam.utility.BindglamUtility;
 import com.bindglam.utility.events.BindglamInventoryCloseEvent;
+import com.bindglam.utility.gui.component.UIComponent;
 import com.bindglam.utility.text.ComponentUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -42,7 +43,22 @@ public abstract class GuiBase implements InventoryHolder, Listener {
         this.title = title;
 
         if(updateTick > 0) {
-            this.taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(BindglamUtility.getInstance(), this::onTick, 0L, updateTick);
+            this.taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(BindglamUtility.getInstance(), () -> {
+                boolean shouldUpdateUI = false;
+
+                for(UIComponent component : uiComponents.values()) {
+                    if(component.getAnimator().getAnimation() != null) {
+                        shouldUpdateUI = true;
+
+                        component.getAnimator().update();
+                    }
+                }
+
+                if(shouldUpdateUI)
+                    updateUIComponent();
+
+                onTick();
+            }, 0L, updateTick);
         }
 
         Bukkit.getPluginManager().registerEvents(this, BindglamUtility.getInstance());
@@ -118,9 +134,8 @@ public abstract class GuiBase implements InventoryHolder, Listener {
         return uiComponents;
     }
 
-    public void addUIComponent(UIComponent uiComponent){
-        uiComponent.setParent(this);
-        uiComponents.put(uiComponent.getID(), uiComponent);
+    public void addUIComponent(String id, UIComponent uiComponent){
+        uiComponents.put(id, uiComponent);
         updateUIComponent();
     }
 
