@@ -1,6 +1,5 @@
 package com.bindglam.utility;
 
-import com.bindglam.utility.events.BindglamInventoryCloseEvent;
 import com.bindglam.utility.gui.GuiBase;
 import net.kyori.adventure.text.Component;
 import org.bukkit.event.inventory.InventoryClickEvent;

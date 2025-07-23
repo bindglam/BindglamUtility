@@ -1,10 +1,10 @@
 package com.bindglam.utility.gui.component.animation;
 
-import com.bindglam.utility.gui.component.animation.keyframe.AbstractKeyframe;
-import com.bindglam.utility.gui.component.animation.keyframe.GlyphKeyframe;
-import com.bindglam.utility.gui.component.animation.keyframe.KeyframeType;
-import com.bindglam.utility.gui.component.animation.keyframe.OffsetKeyframe;
+import com.bindglam.utility.gui.component.animation.keyframe.*;
 import com.bindglam.utility.math.GeoMath;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.util.RGBLike;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.TreeMap;
@@ -12,6 +12,7 @@ import java.util.TreeMap;
 public class Timeline {
     private final TreeMap<Double, OffsetKeyframe> offset = new TreeMap<>();
     private final TreeMap<Double, GlyphKeyframe> glyph = new TreeMap<>();
+    private final TreeMap<Double, ColorKeyframe> color = new TreeMap<>();
 
     private void addOffsetFrame(double frame, int value, KeyframeType type) {
         offset.put(frame, new OffsetKeyframe(type, value));
@@ -19,6 +20,10 @@ public class Timeline {
 
     private void addGlyphFrame(double frame, String base, int glyphFrame, KeyframeType type) {
         glyph.put(frame, new GlyphKeyframe(type, base, glyphFrame));
+    }
+
+    private void addColorFrame(double frame, TextColor textColor, KeyframeType type) {
+        color.put(frame, new ColorKeyframe(type, textColor));
     }
 
     public int getOffsetFrame(double time) {
@@ -85,6 +90,36 @@ public class Timeline {
         };
     }
 
+    public @Nullable TextColor getColorFrame(double time) {
+        if (color.isEmpty())
+            return null;
+        if (color.containsKey(time))
+            return color.get(time).getValue();
+
+        double nextTime = getHigherKey(color, time);
+        double lastTime = getLowerKey(color, time);
+        if(nextTime == lastTime)
+            return color.get(lastTime).getValue();
+
+        double t = (time - lastTime) / (nextTime - lastTime);
+
+        ColorKeyframe nextColor = color.get(nextTime);
+        ColorKeyframe lastColor = color.get(lastTime);
+
+        return switch (getType(lastColor, nextColor)) {
+            case LINEAR -> GeoMath.lerp(lastColor.getValue(), nextColor.getValue(), t);
+            case SMOOTH -> {
+                double nextControlTime = getHigherKey(color, nextTime);
+                double lastControlTime = getLowerKey(color, lastTime);
+                ColorKeyframe nextControlFrame = color.get(nextControlTime);
+                ColorKeyframe lastControlFrame = color.get(lastControlTime);
+
+                yield GeoMath.smoothLerp(lastControlFrame.getValue(), lastColor.getValue(), nextColor.getValue(), nextControlFrame.getValue(), t);
+            }
+            case STEP -> lastColor.getValue();
+        };
+    }
+
     private double getHigherKey(TreeMap<Double, ?> map, double time) {
         Double high = map.higherKey(time);
         if (high == null)
@@ -126,6 +161,11 @@ public class Timeline {
 
         public Builder keyframe(double frame, String base, int glyphFrame, KeyframeType type) {
             timeline.addGlyphFrame(frame, base, glyphFrame, type);
+            return this;
+        }
+
+        public Builder keyframe(double frame, TextColor color, KeyframeType type) {
+            timeline.addColorFrame(frame, color, type);
             return this;
         }
 

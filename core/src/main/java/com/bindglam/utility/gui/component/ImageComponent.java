@@ -2,10 +2,12 @@ package com.bindglam.utility.gui.component;
 
 import com.bindglam.utility.BindglamUtility;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 
 public class ImageComponent extends OffsetComponent {
     private String glyphId;
+    private TextColor color = NamedTextColor.WHITE;
 
     public ImageComponent(String glyphId) {
         this.glyphId = glyphId;
@@ -19,12 +21,24 @@ public class ImageComponent extends OffsetComponent {
         this.glyphId = glyphId;
     }
 
+    public TextColor getColor() {
+        return color;
+    }
+
+    public void setColor(TextColor color) {
+        this.color = color;
+    }
+
     @Override
-    public Component build(TextColor color) {
+    public Component build() {
         String id = getAnimator().getGlyph();
         if(id == null)
             id = glyphId;
 
-        return BindglamUtility.getInstance().getCompatibility().getGlyph(id, getOffset()+getAnimator().getOffset()).color(color);
+        TextColor glyphColor = getAnimator().getColor();
+        if(glyphColor == null)
+            glyphColor = color;
+
+        return BindglamUtility.getInstance().getCompatibility().getGlyph(id, getOffset()+getAnimator().getOffset()).color(glyphColor);
     }
 }

@@ -1,5 +1,6 @@
 package com.bindglam.utility.gui.component.animation;
 
+import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.Nullable;
 
 public class Animator {
@@ -33,6 +34,12 @@ public class Animator {
         if(animation == null)
             return null;
         return animation.getTimeline().getGlyphFrame(time);
+    }
+
+    public @Nullable TextColor getColor() {
+        if(animation == null)
+            return null;
+        return animation.getTimeline().getColorFrame(time);
     }
 
     public Animation getAnimation() {
