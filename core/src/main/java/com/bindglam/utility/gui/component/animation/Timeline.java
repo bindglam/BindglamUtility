@@ -13,6 +13,7 @@ public class Timeline {
     private final TreeMap<Double, OffsetKeyframe> offset = new TreeMap<>();
     private final TreeMap<Double, GlyphKeyframe> glyph = new TreeMap<>();
     private final TreeMap<Double, ColorKeyframe> color = new TreeMap<>();
+    private final TreeMap<Double, ActionKeyframe> action = new TreeMap<>();
 
     private void addOffsetFrame(double frame, int value, KeyframeType type) {
         offset.put(frame, new OffsetKeyframe(type, value));
@@ -24,6 +25,10 @@ public class Timeline {
 
     private void addColorFrame(double frame, TextColor textColor, KeyframeType type) {
         color.put(frame, new ColorKeyframe(type, textColor));
+    }
+
+    private void addActionFrame(double frame, Runnable runnable) {
+        action.put(frame, new ActionKeyframe(runnable));
     }
 
     public int getOffsetFrame(double time) {
@@ -120,6 +125,27 @@ public class Timeline {
         };
     }
 
+    public @Nullable ActionKeyframe.Action getActionFrame(double time) {
+        if (action.isEmpty())
+            return null;
+        if (action.containsKey(time))
+            return action.get(time).getValue();
+
+        double nextTime = getHigherKey(action, time);
+        double lastTime = getLowerKey(action, time);
+        if(nextTime == lastTime)
+            return action.get(lastTime).getValue();
+
+        double t = (time - lastTime) / (nextTime - lastTime);
+
+        ActionKeyframe nextAction = action.get(nextTime);
+        ActionKeyframe lastAction = action.get(lastTime);
+
+        return switch (getType(lastAction, nextAction)) {
+            case LINEAR, SMOOTH, STEP -> lastAction.getValue();
+        };
+    }
+
     private double getHigherKey(TreeMap<Double, ?> map, double time) {
         Double high = map.higherKey(time);
         if (high == null)
@@ -148,6 +174,7 @@ public class Timeline {
         private final Timeline timeline = new Timeline();
 
         private Builder() {
+            timeline.addActionFrame(0.0, () -> {});
         }
 
         public static Builder builder() {
@@ -166,6 +193,11 @@ public class Timeline {
 
         public Builder keyframe(double frame, TextColor color, KeyframeType type) {
             timeline.addColorFrame(frame, color, type);
+            return this;
+        }
+
+        public Builder keyframe(double frame, Runnable action) {
+            timeline.addActionFrame(frame, action);
             return this;
         }
 
