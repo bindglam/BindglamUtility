@@ -37,8 +37,6 @@ public abstract class GuiBase implements InventoryHolder, Listener {
 
     protected int taskID = -1;
 
-    private boolean isUpdating = false;
-
     public GuiBase(int size, Component title, int updateTick){
         this.inv = Bukkit.createInventory(this, size, title);
         this.originalTitle = title;
@@ -89,7 +87,7 @@ public abstract class GuiBase implements InventoryHolder, Listener {
     @EventHandler
     public void onOpenEvent(InventoryOpenEvent event){
         Inventory inventory = event.getView().getTopInventory();
-        if(inventory.getHolder(false) != this || isUpdating) return;
+        if(inventory.getHolder(false) != this) return;
 
         onOpen(event);
 
@@ -115,7 +113,7 @@ public abstract class GuiBase implements InventoryHolder, Listener {
     public void onCloseEvent(BindglamInventoryCloseEvent event){
         Player player = (Player) event.getPlayer();
         Inventory inventory = event.getView().getTopInventory();
-        if(inventory.getHolder(false) != this || isUpdating) return;
+        if(inventory.getHolder(false) != this) return;
 
         onClose((InventoryCloseEvent) event);
         onClose(event);
@@ -151,8 +149,6 @@ public abstract class GuiBase implements InventoryHolder, Listener {
     }
 
     public void updateUIComponent(){
-        isUpdating = true;
-
         title = ComponentUtil.copyComponent(originalTitle);
         for(UIComponent component : uiComponents.values()){
             title = title.append(component.build());
@@ -161,8 +157,6 @@ public abstract class GuiBase implements InventoryHolder, Listener {
         for(Player player : viewers.stream().map(Bukkit::getPlayer).toList()) {
             BindglamUtility.guiRenderer().sendFakeInventory(player, inv, title);
         }
-
-        isUpdating = false;
     }
 
     public @Nullable Object getItemData(int slot) {
