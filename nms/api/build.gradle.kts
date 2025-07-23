@@ -1,7 +1,7 @@
-dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+plugins {
+    id("standard-conventions")
 }
 
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+dependencies {
+    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
 }

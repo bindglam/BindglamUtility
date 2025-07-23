@@ -1,16 +1,35 @@
-subprojects {
-    apply(plugin = "java-library")
+plugins {
+    id("standard-conventions")
+    id("com.gradleup.shadow") version "9.0.0-rc1"
+}
 
-    group = "com.bindglam"
-    version = "1.0-SNAPSHOT"
+dependencies {
+    implementation(project(":core"))
+    fun searchAll(target: Project) {
+        val sub = target.subprojects
+        if (sub.isNotEmpty()) sub.forEach {
+            searchAll(it)
+        }
+    }
+    searchAll(rootProject)
+}
 
-    repositories {
-        mavenCentral()
-        maven("https://repo.papermc.io/repository/maven-public/")
-        maven("https://maven.devs.beer/")
-        maven("https://repo.nexomc.com/releases")
-        maven("https://repo.codemc.io/repository/maven-releases/")
-        maven("https://repo.codemc.io/repository/maven-snapshots/")
-        maven("https://repo.codemc.org/repository/maven-public/")
+tasks {
+    jar {
+        finalizedBy(shadowJar)
+    }
+
+    shadowJar {
+        archiveClassifier = ""
+        dependencies {
+            exclude(dependency("org.jetbrains:annotations:26.0.2"))
+            exclude(dependency("org.jetbrains:annotations:24.1.0"))
+            exclude(dependency("org.jetbrains:annotations:13.0"))
+        }
+        fun prefix(pattern: String) {
+            relocate(pattern, "com.bindglam.utility.shaded.$pattern")
+        }
+        prefix("kotlin")
+        prefix("dev.jorel.commandapi")
     }
 }
