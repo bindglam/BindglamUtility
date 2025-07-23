@@ -7,7 +7,6 @@ import com.bindglam.utility.text.ComponentUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -27,10 +26,12 @@ import java.util.*;
  * 쉽고 빠르게 인벤토리 Gui를 생성하는 클래스
  */
 public abstract class GuiBase implements InventoryHolder, Listener {
-    private Inventory inv;
+    private final Inventory inv;
     private final Set<UUID> viewers = new HashSet<>();
 
-    private final Component title;
+    private final Component originalTitle;
+    private Component title;
+
     private final Map<String, UIComponent> uiComponents = new HashMap<>();
     private final Map<Integer, Object> itemData = new HashMap<>();
 
@@ -40,6 +41,7 @@ public abstract class GuiBase implements InventoryHolder, Listener {
 
     public GuiBase(int size, Component title, int updateTick){
         this.inv = Bukkit.createInventory(this, size, title);
+        this.originalTitle = title;
         this.title = title;
 
         if(updateTick > 0) {
@@ -151,13 +153,13 @@ public abstract class GuiBase implements InventoryHolder, Listener {
     public void updateUIComponent(){
         isUpdating = true;
 
-        Component builtTitle = ComponentUtil.copyComponent(title);
+        title = ComponentUtil.copyComponent(originalTitle);
         for(UIComponent component : uiComponents.values()){
-            builtTitle = builtTitle.append(component.build());
+            title = title.append(component.build());
         }
 
         for(Player player : viewers.stream().map(Bukkit::getPlayer).toList()) {
-            BindglamUtility.guiRenderer().sendFakeInventory(player, inv, builtTitle);
+            BindglamUtility.guiRenderer().sendFakeInventory(player, inv, title);
         }
 
         isUpdating = false;
