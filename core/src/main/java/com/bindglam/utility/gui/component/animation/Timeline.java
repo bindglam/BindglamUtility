@@ -2,9 +2,7 @@ package com.bindglam.utility.gui.component.animation;
 
 import com.bindglam.utility.gui.component.animation.keyframe.*;
 import com.bindglam.utility.math.GeoMath;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.util.RGBLike;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.TreeMap;
@@ -14,6 +12,9 @@ public class Timeline {
     private final TreeMap<Double, GlyphKeyframe> glyph = new TreeMap<>();
     private final TreeMap<Double, ColorKeyframe> color = new TreeMap<>();
     private final TreeMap<Double, ActionKeyframe> action = new TreeMap<>();
+
+    private Timeline() {
+    }
 
     private void addOffsetFrame(double frame, int value, KeyframeType type) {
         offset.put(frame, new OffsetKeyframe(type, value));
