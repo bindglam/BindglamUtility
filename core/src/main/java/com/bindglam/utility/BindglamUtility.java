@@ -8,8 +8,6 @@ import com.bindglam.utility.listeners.PlayerListener;
 import com.bindglam.utility.pluginmessaging.PluginMessenger;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
-import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.CommandPermission;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,13 +21,6 @@ public class BindglamUtility extends JavaPlugin {
     @Override
     public void onLoad() {
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
-
-        new CommandAPICommand("testgui")
-                .withPermission(CommandPermission.OP)
-                .executesPlayer((player, args) -> {
-                    new TestGui().open(player);
-                })
-                .register();
     }
 
     @Override
