@@ -33,7 +33,7 @@ public abstract class GuiBase implements InventoryHolder, Listener {
     private Component title;
 
     private final Map<String, UIComponent> uiComponents = new HashMap<>();
-    private final Map<Integer, Object> itemData = new HashMap<>();
+    private final Map<Integer, Map<String, Object>> itemData = new HashMap<>();
 
     protected int taskID = -1;
 
@@ -159,15 +159,38 @@ public abstract class GuiBase implements InventoryHolder, Listener {
         }
     }
 
+    @Deprecated
     public @Nullable Object getItemData(int slot) {
-        return itemData.get(slot);
+        return getItemData(slot, "");
     }
 
+    public @Nullable Object getItemData(int slot, String id) {
+        if(!itemData.containsKey(slot))
+            return null;
+        return itemData.get(slot).get(id);
+    }
+
+    @Deprecated
     public void setItemData(int slot, Object data) {
-        itemData.put(slot, data);
+        setItemData(slot, "", data);
     }
 
+    public void setItemData(int slot, String id, Object data) {
+        if(!itemData.containsKey(slot))
+            itemData.put(slot, new HashMap<>());
+        itemData.get(slot).put(id, data);
+    }
+
+    @Deprecated
     public void removeItemData(int slot) {
-        itemData.remove(slot);
+        removeItemData(slot, "");
+    }
+
+    public void removeItemData(int slot, String id) {
+        if(!itemData.containsKey(slot))
+            return;
+        itemData.get(slot).remove(id);
+        if(itemData.get(slot).isEmpty())
+            itemData.remove(slot);
     }
 }
