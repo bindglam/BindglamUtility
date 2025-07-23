@@ -32,7 +32,7 @@ public abstract class GuiBase implements InventoryHolder, Listener {
     private final Component originalTitle;
     private Component title;
 
-    private final Map<String, UIComponent> uiComponents = new HashMap<>();
+    private final Map<String, UIComponent> uiComponents = new LinkedHashMap<>();
     private final Map<Integer, Map<String, Object>> itemData = new HashMap<>();
 
     protected int taskID = -1;
@@ -46,7 +46,10 @@ public abstract class GuiBase implements InventoryHolder, Listener {
             this.taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(BindglamUtility.getInstance(), () -> {
                 boolean shouldUpdateUI = false;
 
-                for(UIComponent component : uiComponents.values()) {
+                List<UIComponent> list = uiComponents.values().stream().toList();
+                for(int i = uiComponents.size()-1; i >= 0; i--) {
+                    UIComponent component = list.get(i);
+
                     if(component.getAnimator().getAnimation() != null) {
                         shouldUpdateUI = true;
 
