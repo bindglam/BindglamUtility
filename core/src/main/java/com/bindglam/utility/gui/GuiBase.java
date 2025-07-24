@@ -158,6 +158,7 @@ public abstract class GuiBase implements InventoryHolder, Listener {
         }
 
         for(Player player : viewers.stream().map(Bukkit::getPlayer).toList()) {
+            if(player == null) continue;
             BindglamUtility.guiRenderer().sendFakeInventory(player, inv, title);
         }
     }
@@ -195,5 +196,13 @@ public abstract class GuiBase implements InventoryHolder, Listener {
         itemData.get(slot).remove(id);
         if(itemData.get(slot).isEmpty())
             itemData.remove(slot);
+    }
+
+    public void addViewer(Player player) {
+        viewers.add(player.getUniqueId());
+    }
+
+    public void removeViewer(Player player) {
+        viewers.remove(player.getUniqueId());
     }
 }
