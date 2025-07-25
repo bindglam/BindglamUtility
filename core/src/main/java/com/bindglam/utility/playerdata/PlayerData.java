@@ -3,6 +3,7 @@ package com.bindglam.utility.playerdata;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.bindglam.utility.BindglamUtility;
+import com.bindglam.utility.events.BindglamPlayerDataLoadEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -52,6 +53,9 @@ public class PlayerData {
             }
 
             isLoading.set(false);
+
+            if(player != null)
+                new BindglamPlayerDataLoadEvent(player, this, true).callEvent();
         }, 20*50L, TimeUnit.MILLISECONDS);
     }
 
