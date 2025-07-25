@@ -21,7 +21,7 @@ public final class PlayerDataManager {
         try {
             Connection connection = BindglamUtility.database().getConnection();
             Statement statement = connection.createStatement();
-            statement.execute("CREATE TABLE IF NOT EXISTS bu_playerdata(uuid VARCHAR(36), data JSON)");
+            statement.execute("CREATE TABLE IF NOT EXISTS bu_playerdata(uuid VARCHAR(36) PRIMARY KEY, data JSON)");
             statement.close();
             BindglamUtility.database().evictConnection(connection);
         } catch (SQLException e) {
