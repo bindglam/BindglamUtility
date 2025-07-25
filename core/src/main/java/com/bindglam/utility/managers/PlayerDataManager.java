@@ -5,6 +5,7 @@ import com.bindglam.utility.playerdata.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -61,11 +62,11 @@ public final class PlayerDataManager {
         Bukkit.getOnlinePlayers().forEach((player) -> dispose(player, async));
     }
 
-    public @NotNull PlayerData getPlayerData(UUID uuid) {
-        return Objects.requireNonNull(playerDataMap.get(uuid));
+    public @Nullable PlayerData getPlayerData(UUID uuid) {
+        return playerDataMap.get(uuid);
     }
 
     public @NotNull PlayerData getPlayerData(Player player) {
-        return getPlayerData(player.getUniqueId());
+        return Objects.requireNonNull(getPlayerData(player.getUniqueId()));
     }
 }
