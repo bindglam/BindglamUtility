@@ -115,6 +115,10 @@ public class PlayerData {
         return variables.containsKey(name);
     }
 
+    public void removeVariable(String name) {
+        variables.remove(name);
+    }
+
     public Map<String, Object> getVariables() {
         return Map.copyOf(variables);
     }
