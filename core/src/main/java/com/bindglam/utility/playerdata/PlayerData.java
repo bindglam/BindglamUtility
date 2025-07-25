@@ -35,7 +35,7 @@ public class PlayerData {
 
             try {
                 Connection connection = BindglamUtility.database().getConnection();
-                PreparedStatement statement = connection.prepareStatement("SELECT * FROM rpg_playerdata WHERE uuid = ?");
+                PreparedStatement statement = connection.prepareStatement("SELECT * FROM bu_playerdata WHERE uuid = ?");
                 statement.setString(1, uuid.toString());
                 ResultSet rs = statement.executeQuery();
 
@@ -66,18 +66,18 @@ public class PlayerData {
             variables.forEach((name, value) -> dataJson.put(name, VariableParser.parseToJSON(value)));
 
             Connection connection = BindglamUtility.database().getConnection();
-            PreparedStatement statement1 = connection.prepareStatement("SELECT * FROM rpg_playerdata WHERE uuid = ?");
+            PreparedStatement statement1 = connection.prepareStatement("SELECT * FROM bu_playerdata WHERE uuid = ?");
             statement1.setString(1, uuid.toString());
             ResultSet rs1 = statement1.executeQuery();
 
             if (rs1.next()) {
-                PreparedStatement statement2 = connection.prepareStatement("UPDATE rpg_playerdata SET data = ? WHERE uuid = ?");
+                PreparedStatement statement2 = connection.prepareStatement("UPDATE bu_playerdata SET data = ? WHERE uuid = ?");
                 statement2.setString(1, dataJson.toString());
                 statement2.setString(2, uuid.toString());
                 statement2.executeUpdate();
                 statement2.close();
             } else {
-                PreparedStatement statement2 = connection.prepareStatement("INSERT INTO rpg_playerdata(uuid, data) VALUES (?, ?)");
+                PreparedStatement statement2 = connection.prepareStatement("INSERT INTO bu_playerdata(uuid, data) VALUES (?, ?)");
                 statement2.setString(1, uuid.toString());
                 statement2.setString(2, dataJson.toString());
                 statement2.executeUpdate();
