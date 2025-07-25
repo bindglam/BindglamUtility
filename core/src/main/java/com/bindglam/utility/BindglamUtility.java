@@ -75,7 +75,7 @@ public class BindglamUtility extends JavaPlugin {
                                      |___/                                               |___/\s
                 """);
 
-        database.connect(getConfig().getConfigurationSection("database." + Objects.requireNonNull(getConfig().getString("database.type"))));
+        database.connect(getConfig().getConfigurationSection("database." + Objects.requireNonNull(getConfig().getString("database.type")).toLowerCase()));
 
         playerDataManager.init();
     }
