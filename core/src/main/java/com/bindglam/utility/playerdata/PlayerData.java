@@ -6,6 +6,7 @@ import com.bindglam.utility.BindglamUtility;
 import com.bindglam.utility.events.BindglamPlayerDataLoadEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
@@ -103,19 +104,19 @@ public class PlayerData {
         return uuid;
     }
 
-    public <T> @Nullable T getVariable(String name) {
+    public <T> @Nullable T getVariable(@NotNull String name) {
         return (T) variables.get(name);
     }
 
-    public void setVariable(String name, @Nullable Object value) {
+    public void setVariable(@NotNull String name, @Nullable Object value) {
         variables.put(name, value);
     }
 
-    public boolean hasVariable(String name) {
+    public boolean hasVariable(@NotNull String name) {
         return variables.containsKey(name);
     }
 
-    public void removeVariable(String name) {
+    public void removeVariable(@NotNull String name) {
         variables.remove(name);
     }
 
