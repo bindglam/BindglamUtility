@@ -31,5 +31,7 @@ tasks {
         }
         prefix("kotlin")
         prefix("dev.jorel.commandapi")
+        prefix("com.zaxxer.hikari")
+        prefix("com.alibaba.fastjson2")
     }
 }

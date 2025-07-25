@@ -3,13 +3,20 @@ package com.bindglam.utility;
 import com.bindglam.utility.compatibility.Compatibility;
 import com.bindglam.utility.compatibility.ItemsAdderCompatibility;
 import com.bindglam.utility.compatibility.NexoCompatibility;
+import com.bindglam.utility.database.Database;
+import com.bindglam.utility.database.MySQLDatabase;
+import com.bindglam.utility.database.SQLiteDatabase;
 import com.bindglam.utility.gui.GuiRenderer;
 import com.bindglam.utility.listeners.PlayerListener;
+import com.bindglam.utility.nms.v1_21_R3.GuiRendererImpl;
+import com.bindglam.utility.managers.PlayerDataManager;
 import com.bindglam.utility.pluginmessaging.PluginMessenger;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class BindglamUtility extends JavaPlugin {
     private static BindglamUtility instance;
@@ -17,6 +24,8 @@ public class BindglamUtility extends JavaPlugin {
     private Compatibility compatibility;
     private PluginMessenger pluginMessenger;
     private GuiRenderer guiRenderer;
+    private Database database;
+    private PlayerDataManager playerDataManager;
 
     @Override
     public void onLoad() {
@@ -26,6 +35,8 @@ public class BindglamUtility extends JavaPlugin {
     @Override
     public void onEnable() {
         CommandAPI.onEnable();
+
+        saveDefaultConfig();
 
         instance = this;
 
@@ -39,7 +50,13 @@ public class BindglamUtility extends JavaPlugin {
             return;
         }
         pluginMessenger = new PluginMessenger();
-        guiRenderer = new com.bindglam.utility.nms.v1_21_R3.GuiRendererImpl();
+        guiRenderer = new GuiRendererImpl();
+        database = switch(Objects.requireNonNull(getConfig().getString("database.type"))) {
+            case "SQLITE" -> new SQLiteDatabase();
+            case "MYSQL" -> new MySQLDatabase();
+            default -> throw new IllegalStateException("Unexpected value: " + getConfig().getString("database.type"));
+        };
+        playerDataManager = new PlayerDataManager();
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", pluginMessenger);
@@ -57,11 +74,19 @@ public class BindglamUtility extends JavaPlugin {
                                       __/ |                                               __/ |
                                      |___/                                               |___/\s
                 """);
+
+        database.connect(getConfig().getConfigurationSection("database." + Objects.requireNonNull(getConfig().getString("database.type"))));
+
+        playerDataManager.init();
     }
 
     @Override
     public void onDisable() {
         CommandAPI.onDisable();
+
+        playerDataManager.disposeAll(false);
+
+        database.close();
     }
 
     public Compatibility getCompatibility() {
@@ -74,6 +99,14 @@ public class BindglamUtility extends JavaPlugin {
 
     public GuiRenderer getGuiRenderer() {
         return guiRenderer;
+    }
+
+    public Database getDatabase() {
+        return database;
+    }
+
+    public PlayerDataManager getPlayerDataManager() {
+        return playerDataManager;
     }
 
     public static @NotNull BindglamUtility getInstance() {
@@ -90,5 +123,13 @@ public class BindglamUtility extends JavaPlugin {
 
     public static GuiRenderer guiRenderer() {
         return getInstance().getGuiRenderer();
+    }
+
+    public static Database database() {
+        return getInstance().getDatabase();
+    }
+
+    public static PlayerDataManager playerDataManager() {
+        return getInstance().getPlayerDataManager();
     }
 }
