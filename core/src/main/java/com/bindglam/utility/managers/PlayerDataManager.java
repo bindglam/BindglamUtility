@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public final class PlayerDataManager {
     private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
@@ -32,12 +33,12 @@ public final class PlayerDataManager {
         Bukkit.getOnlinePlayers().forEach(this::load);
     }
 
-    public void load(UUID uuid) {
+    public void load(UUID uuid, Consumer<PlayerData> consumer) {
         if(playerDataMap.containsKey(uuid))
             return;
 
         PlayerData playerData = new PlayerData(uuid);
-        playerData.load();
+        playerData.load(consumer);
         playerDataMap.put(uuid, playerData);
     }
 
@@ -48,6 +49,10 @@ public final class PlayerDataManager {
         PlayerData playerData = playerDataMap.get(uuid);
         playerData.dispose(async);
         playerDataMap.remove(uuid);
+    }
+
+    public void load(UUID uuid) {
+        load(uuid, null);
     }
 
     public void load(Player player) {

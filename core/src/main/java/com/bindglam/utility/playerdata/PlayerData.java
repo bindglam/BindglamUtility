@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 public class PlayerData {
     private final UUID uuid;
@@ -30,7 +31,7 @@ public class PlayerData {
         this.uuid = uuid;
     }
 
-    public void load() {
+    public void load(Consumer<PlayerData> consumer) {
         Bukkit.getAsyncScheduler().runDelayed(BindglamUtility.getInstance(), (task) -> {
             Player player = getPlayer();
 
@@ -57,6 +58,9 @@ public class PlayerData {
 
             if(player != null)
                 new BindglamPlayerDataLoadEvent(player, this, true).callEvent();
+
+            if(consumer != null)
+                consumer.accept(this);
         }, 20*50L, TimeUnit.MILLISECONDS);
     }
 
