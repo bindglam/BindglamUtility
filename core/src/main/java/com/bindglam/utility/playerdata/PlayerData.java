@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.bindglam.utility.BindglamUtility;
 import com.bindglam.utility.events.BindglamPlayerDataLoadEvent;
+import com.bindglam.utility.events.BindglamPlayerDataSaveEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -64,8 +65,20 @@ public class PlayerData {
         }, 20*50L, TimeUnit.MILLISECONDS);
     }
 
-    private void dispose() {
+    public void dispose(boolean async) {
+        if(async)
+            Bukkit.getAsyncScheduler().runNow(BindglamUtility.getInstance(), (task) -> disposeInternal(true));
+        else
+            disposeInternal(false);
+    }
+
+    private void disposeInternal(boolean async) {
         try {
+            Player player = getPlayer();
+
+            if(player != null)
+                new BindglamPlayerDataSaveEvent(player, this, async).callEvent();
+
             JSONObject dataJson = new JSONObject();
 
             variables.forEach((name, value) -> dataJson.put(name, VariableParser.parseToJSON(value)));
@@ -95,13 +108,6 @@ public class PlayerData {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void dispose(boolean async) {
-        if(async)
-            Bukkit.getAsyncScheduler().runNow(BindglamUtility.getInstance(), (task) -> dispose());
-        else
-            dispose();
     }
 
     public UUID getUniqueId() {
