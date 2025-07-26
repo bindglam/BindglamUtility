@@ -8,9 +8,9 @@ import com.bindglam.utility.database.MySQLDatabase;
 import com.bindglam.utility.database.SQLiteDatabase;
 import com.bindglam.utility.gui.GuiRenderer;
 import com.bindglam.utility.listeners.PlayerListener;
-import com.bindglam.utility.nms.v1_21_R3.GuiRendererImpl;
 import com.bindglam.utility.managers.PlayerDataManager;
 import com.bindglam.utility.pluginmessaging.PluginMessenger;
+import com.bindglam.utility.version.MinecraftVersion;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -50,7 +50,15 @@ public class BindglamUtility extends JavaPlugin {
             return;
         }
         pluginMessenger = new PluginMessenger();
-        guiRenderer = new GuiRendererImpl();
+        if(MinecraftVersion.CURRENT_VERSION.equals(MinecraftVersion.V1_21_4)) {
+            guiRenderer = new com.bindglam.utility.nms.v1_21_R3.GuiRendererImpl();
+        } else if(MinecraftVersion.CURRENT_VERSION.equals(MinecraftVersion.V1_21_8)) {
+            guiRenderer = new com.bindglam.utility.nms.v1_21_R5.GuiRendererImpl();
+        } else {
+            getLogger().severe("Unsupported version is detected! Disabling plugin...");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         database = switch(Objects.requireNonNull(getConfig().getString("database.type"))) {
             case "SQLITE" -> new SQLiteDatabase();
             case "MYSQL" -> new MySQLDatabase();
