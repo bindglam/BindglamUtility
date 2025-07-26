@@ -5,7 +5,6 @@ import com.bindglam.utility.database.Database;
 import com.bindglam.utility.manager.GuiRendererManager;
 import com.bindglam.utility.manager.PlayerDataManager;
 import com.bindglam.utility.messaging.PluginMessenger;
-import com.bindglam.utility.nms.PacketDispatcher;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
