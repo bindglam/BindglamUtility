@@ -5,4 +5,4 @@ rootProject.name = "BindglamUtility"
 include("core")
 include("nms:v1_21_R3")
 include("nms:v1_21_R5")
-include("nms:api")
+include("api")

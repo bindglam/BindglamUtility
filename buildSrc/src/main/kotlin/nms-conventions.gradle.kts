@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    compileOnly(project(":nms:api"))
+    compileOnly(project(":api"))
 }
