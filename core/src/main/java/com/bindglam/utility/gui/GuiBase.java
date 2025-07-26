@@ -17,6 +17,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -86,6 +87,20 @@ public abstract class GuiBase implements InventoryHolder, Listener {
 
     public void onTick(){
     }
+
+
+    public void drawRectangleOutline(int x, int y, int width, int height, ItemStack itemStack) {
+        for (int i = x; i <= x + width; i++) {
+            inv.setItem(9 * y + i, itemStack);
+            inv.setItem(9 * (y + height) + i, itemStack);
+        }
+
+        for (int i = y; i <= y + height; i++) {
+            inv.setItem(x + 9 * i, itemStack);
+            inv.setItem(x + 9 * i + width, itemStack);
+        }
+    }
+
 
     @EventHandler
     public void onOpenEvent(InventoryOpenEvent event){
