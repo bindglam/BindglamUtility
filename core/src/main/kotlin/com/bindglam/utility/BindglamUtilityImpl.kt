@@ -11,7 +11,7 @@ import com.bindglam.utility.manager.*
 import com.bindglam.utility.messaging.PluginMessenger
 import com.bindglam.utility.messaging.PluginMessengerImpl
 import com.bindglam.utility.nms.PacketDispatcher
-import com.bindglam.utility.version.MinecraftVersion
+import com.bindglam.utility.utils.MinecraftVersion
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.messaging.PluginMessageListener
 import java.util.*
@@ -40,10 +40,10 @@ class BindglamUtilityImpl : JavaPlugin(), BindglamUtilityPlugin {
             return
         }
         pluginMessenger = PluginMessengerImpl(this)
-        packetDispatcher = when(MinecraftVersion.CURRENT_VERSION) {
+        packetDispatcher = when(MinecraftVersion.CURRENT) {
             MinecraftVersion.V1_21_4 -> com.bindglam.utility.nms.v1_21_R3.PacketDispatcherImpl()
             MinecraftVersion.V1_21_8 -> com.bindglam.utility.nms.v1_21_R5.PacketDispatcherImpl()
-            else -> throw IllegalStateException("Unexpected version: ${MinecraftVersion.CURRENT_VERSION}")
+            else -> throw IllegalStateException("Unexpected version: ${MinecraftVersion.CURRENT}")
         }
         database = when (Objects.requireNonNull(config.getString("database.type"))) {
             "SQLITE" -> SQLiteDatabase()

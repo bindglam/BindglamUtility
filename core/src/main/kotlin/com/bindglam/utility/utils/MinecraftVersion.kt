@@ -4,12 +4,12 @@ import org.bukkit.Bukkit
 
 data class MinecraftVersion(val first: Int, val second: Int, val third: Int): Comparable<MinecraftVersion> {
     companion object {
-        val current = MinecraftVersion(Bukkit.getBukkitVersion().substringBefore('-'))
+        val CURRENT = MinecraftVersion(Bukkit.getBukkitVersion().substringBefore('-'))
 
         val V1_21_4 = MinecraftVersion(1, 21, 4)
         val V1_21_8 = MinecraftVersion(1, 21, 8)
 
-        private val comparator = Comparator.comparing { v: MinecraftVersion -> v.first }
+        private val COMPARATOR = Comparator.comparing { v: MinecraftVersion -> v.first }
             .thenComparing { v: MinecraftVersion -> v.second }
             .thenComparing { v: MinecraftVersion -> v.third }
     }
@@ -22,7 +22,7 @@ data class MinecraftVersion(val first: Int, val second: Int, val third: Int): Co
     )
 
     override fun compareTo(other: MinecraftVersion): Int {
-        return comparator.compare(this, other)
+        return COMPARATOR.compare(this, other)
     }
 
     override fun toString(): String {
