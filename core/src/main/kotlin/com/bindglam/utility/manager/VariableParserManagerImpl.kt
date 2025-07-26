@@ -1,30 +1,46 @@
 package com.bindglam.utility.manager
 
-import com.bindglam.utility.playerdata.VariableParser
+import com.bindglam.utility.playerdata.*
 
 class VariableParserManagerImpl : VariableParserManager {
-    private val parsers = HashMap<Class<*>, VariableParser<*>>()
+    private val parsers = ArrayList<VariableParser<*>>()
+
+    private val listParser = ListParser()
+    private val mapParser = MapParser()
+
+    init {
+        register(ItemStackParser())
+        register(DateParser())
+    }
 
     override fun register(parser: VariableParser<*>) {
-        parsers[parser.typeClass] = parser
+        parsers.add(parser)
     }
 
     override fun parseToJSON(`object`: Any?): Any? {
-        if(`object` == null) return null
-        if(!parsers.containsKey(`object`.javaClass)) return null
+        if(`object` == null)
+            return null
 
-        return parsers[`object`.javaClass]!!.parseToJSON(`object`)
+        for (parser in parsers) {
+            val result = parser.parseToJSON(`object`) ?: continue
+
+            return result
+        }
+
+        return listParser.parseToJSON(`object`) ?: mapParser.parseToJSON(`object`) ?: `object`
     }
 
     override fun parseFromJSON(json: Any?): Any? {
-        if(json == null) return null
+        if(json == null)
+            return null
 
-        for (parser in parsers.values) {
+        for (parser in parsers) {
             val result = parser.parseFromJSON(json)
 
             if(result != null)
                 return result
         }
-        return null
+
+        return listParser.parseFromJSON(json) ?: mapParser.parseFromJSON(json) ?: json
     }
 }
