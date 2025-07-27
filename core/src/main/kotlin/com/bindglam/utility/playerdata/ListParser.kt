@@ -15,7 +15,7 @@ class ListParser : VariableParser<List<*>> {
     }
 
     override fun parseFromJSON(json: Any): List<*>? {
-        if(json !is JSONArray)
+        if(json !is List<*>)
             return null
 
         val result = arrayListOf<Any?>()

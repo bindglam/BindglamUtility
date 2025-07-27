@@ -21,11 +21,11 @@ class DateParser : VariableParser<LocalDateTime> {
     }
 
     override fun parseFromJSON(json: Any): LocalDateTime? {
-        if(json !is JSONObject)
+        if(json !is Map<*, *>)
             return null
-        if(json.getString("__type__") != "date")
+        if(json["__type__"] != "date")
             return null
 
-        return LocalDateTime.parse(json.getString("data"), DATE_TIME_FORMATTER)
+        return LocalDateTime.parse(json["data"] as String, DATE_TIME_FORMATTER)
     }
 }

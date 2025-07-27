@@ -16,11 +16,11 @@ class ItemStackParser : VariableParser<ItemStack> {
     }
 
     override fun parseFromJSON(json: Any): ItemStack? {
-        if(json !is JSONObject)
+        if(json !is Map<*, *>)
             return null
-        if(json.getString("__type__") != "itemstack")
+        if(json["__type__"] != "itemstack")
             return null
 
-        return ItemStack.deserializeBytes(Base64.getDecoder().decode(json.getString("data")))
+        return ItemStack.deserializeBytes(Base64.getDecoder().decode(json["data"] as String))
     }
 }

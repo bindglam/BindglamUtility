@@ -15,12 +15,12 @@ class MapParser : VariableParser<Map<*, *>> {
     }
 
     override fun parseFromJSON(json: Any): Map<*, *>? {
-        if(json !is JSONObject)
+        if(json !is Map<*, *>)
             return null
 
         val result = hashMapOf<String, Any?>()
 
-        json.forEach { (key, value) -> result[key] = BindglamUtility.getInstance().variableParserManager.parseFromJSON(value) }
+        json.forEach { (key, value) -> result[key as String] = BindglamUtility.getInstance().variableParserManager.parseFromJSON(value) }
 
         return result
     }
