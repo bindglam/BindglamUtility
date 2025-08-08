@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.bindglam"
-version = "1.0-SNAPSHOT"
+version = property("plugin_version").toString()
 
 repositories {
     mavenCentral()
