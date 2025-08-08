@@ -1,7 +1,7 @@
 package com.bindglam.utility.gui.component.animation;
 
 import com.bindglam.utility.gui.component.animation.keyframe.*;
-import com.bindglam.utility.math.BUMath;
+import com.bindglam.utility.math.MathUtil;
 import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,13 +49,13 @@ public class Timeline {
         OffsetKeyframe lastValue = offset.get(lastTime);
 
         return switch (getType(lastValue, nextValue)) {
-            case LINEAR -> (int) BUMath.lerp(lastValue.getValue(), nextValue.getValue(), t);
+            case LINEAR -> (int) MathUtil.lerp(lastValue.getValue(), nextValue.getValue(), t);
             case SMOOTH -> {
                 double nextControlTime = getHigherKey(offset, nextTime);
                 double lastControlTime = getLowerKey(offset, lastTime);
                 OffsetKeyframe nextControlOffset = offset.get(nextControlTime);
                 OffsetKeyframe lastControlOffset = offset.get(lastControlTime);
-                yield (int) BUMath.smoothLerp(lastControlOffset.getValue(), lastValue.getValue(), nextValue.getValue(), nextControlOffset.getValue(), t);
+                yield (int) MathUtil.smoothLerp(lastControlOffset.getValue(), lastValue.getValue(), nextValue.getValue(), nextControlOffset.getValue(), t);
             }
             case STEP -> lastValue.getValue();
         };
@@ -79,7 +79,7 @@ public class Timeline {
 
         return switch (getType(lastGlyph, nextGlyph)) {
             case LINEAR -> {
-                int frame = (int) BUMath.lerp(lastGlyph.getFrame(), nextGlyph.getFrame(), t);
+                int frame = (int) MathUtil.lerp(lastGlyph.getFrame(), nextGlyph.getFrame(), t);
 
                 yield lastGlyph.getBase() + "_" + frame;
             }
@@ -88,7 +88,7 @@ public class Timeline {
                 double lastControlTime = getLowerKey(glyph, lastTime);
                 GlyphKeyframe nextControlFrame = glyph.get(nextControlTime);
                 GlyphKeyframe lastControlFrame = glyph.get(lastControlTime);
-                int frame = (int) BUMath.smoothLerp(lastControlFrame.getFrame(), lastGlyph.getFrame(), nextGlyph.getFrame(), nextControlFrame.getFrame(), t);
+                int frame = (int) MathUtil.smoothLerp(lastControlFrame.getFrame(), lastGlyph.getFrame(), nextGlyph.getFrame(), nextControlFrame.getFrame(), t);
 
                 yield lastGlyph.getBase() + "_" + frame;
             }
@@ -113,14 +113,14 @@ public class Timeline {
         ColorKeyframe lastColor = color.get(lastTime);
 
         return switch (getType(lastColor, nextColor)) {
-            case LINEAR -> BUMath.lerp(lastColor.getValue(), nextColor.getValue(), t);
+            case LINEAR -> MathUtil.lerp(lastColor.getValue(), nextColor.getValue(), t);
             case SMOOTH -> {
                 double nextControlTime = getHigherKey(color, nextTime);
                 double lastControlTime = getLowerKey(color, lastTime);
                 ColorKeyframe nextControlFrame = color.get(nextControlTime);
                 ColorKeyframe lastControlFrame = color.get(lastControlTime);
 
-                yield BUMath.smoothLerp(lastControlFrame.getValue(), lastColor.getValue(), nextColor.getValue(), nextControlFrame.getValue(), t);
+                yield MathUtil.smoothLerp(lastControlFrame.getValue(), lastColor.getValue(), nextColor.getValue(), nextControlFrame.getValue(), t);
             }
             case STEP -> lastColor.getValue();
         };
