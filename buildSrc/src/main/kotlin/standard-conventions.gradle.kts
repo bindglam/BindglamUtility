@@ -3,7 +3,7 @@ plugins {
     kotlin("jvm")
 }
 
-group = "com.bindglam"
+group = "com.bindglam.utility"
 version = property("plugin_version").toString()
 
 repositories {

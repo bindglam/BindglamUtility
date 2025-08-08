@@ -1,5 +1,6 @@
 plugins {
     id("standard-conventions")
+    id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.3.0"
 }
 
 dependencies {
@@ -12,4 +13,13 @@ dependencies {
     rootProject.project("nms").subprojects.forEach {
         implementation(project(":nms:${it.name}", configuration = "reobf"))
     }
+}
+
+bukkitPluginYaml {
+    name = rootProject.name
+    main = "com.bindglam.utility.BindglamUtilityImpl"
+    author = "Bindglam"
+    apiVersion = "1.21"
+    softDepend.add("ItemsAdder")
+    softDepend.add("Nexo")
 }

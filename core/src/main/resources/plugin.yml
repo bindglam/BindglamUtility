@@ -1,8 +1,0 @@
-name: BindglamUtility
-main: com.bindglam.utility.BindglamUtilityImpl
-version: 1.0
-api-version: 1.21
-softdepend:
-  - ItemsAdder
-  - Nexo
-  - packetevents
