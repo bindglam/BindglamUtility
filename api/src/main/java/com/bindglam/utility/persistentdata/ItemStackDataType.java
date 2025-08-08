@@ -16,15 +16,14 @@ public class ItemStackDataType implements PersistentDataType<byte[], ItemStack> 
         return ItemStack.class;
     }
 
-    @NotNull
     @Override
-    public byte[] toPrimitive(ItemStack complex, @NotNull PersistentDataAdapterContext context) {
+    public byte @NotNull [] toPrimitive(ItemStack complex, @NotNull PersistentDataAdapterContext context) {
         return complex.serializeAsBytes();
     }
 
     @NotNull
     @Override
-    public ItemStack fromPrimitive(@NotNull byte[] primitive, @NotNull PersistentDataAdapterContext context) {
+    public ItemStack fromPrimitive(byte @NotNull [] primitive, @NotNull PersistentDataAdapterContext context) {
         return ItemStack.deserializeBytes(primitive);
     }
 }
