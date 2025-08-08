@@ -75,31 +75,12 @@ class BindglamUtilityImpl : JavaPlugin(), BindglamUtilityPlugin {
         )
     }
 
-    override fun getCompatibility(): Compatibility {
-        return compatibility
-    }
-
-    override fun getPluginMessenger(): PluginMessenger {
-        return pluginMessenger
-    }
-
-    override fun getPacketDispatcher(): PacketDispatcher {
-        return packetDispatcher
-    }
-
-    override fun getDatabase(): Database {
-        return database
-    }
-
-    override fun getPlayerDataManager(): PlayerDataManager {
-        return playerDataManager
-    }
-
-    override fun getVariableParserManager(): VariableParserManager {
-        return variableParserManager
-    }
-
-    override fun getGuiRendererManager(): GuiRendererManager {
-        return guiRendererManager
-    }
+    override fun getJavaPlugin(): JavaPlugin = this
+    override fun getCompatibility(): Compatibility = compatibility
+    override fun getPluginMessenger(): PluginMessenger = pluginMessenger
+    override fun getPacketDispatcher(): PacketDispatcher = packetDispatcher
+    override fun getDatabase(): Database = database
+    override fun getPlayerDataManager(): PlayerDataManager = playerDataManager
+    override fun getVariableParserManager(): VariableParserManager = variableParserManager
+    override fun getGuiRendererManager(): GuiRendererManager = guiRendererManager
 }

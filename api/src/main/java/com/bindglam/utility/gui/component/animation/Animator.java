@@ -1,7 +1,9 @@
 package com.bindglam.utility.gui.component.animation;
 
+import com.bindglam.utility.BindglamUtility;
 import com.bindglam.utility.gui.component.animation.keyframe.ActionKeyframe;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -24,11 +26,12 @@ public class Animator {
 
             ActionKeyframe.Action action = getAction();
             if(action != null && !proceedActions.contains(action.getUniqueId())) {
-                action.getRunnable().run();
+                Bukkit.getScheduler().runTask(BindglamUtility.getInstance().getJavaPlugin(), () -> action.getRunnable().run());
                 proceedActions.add(action.getUniqueId());
             }
         } else {
-            animation.onFinished().run();
+            Animation temp = animation;
+            Bukkit.getScheduler().runTask(BindglamUtility.getInstance().getJavaPlugin(), () -> temp.onFinished().run());
 
             time = 0.0;
             animation = null;
