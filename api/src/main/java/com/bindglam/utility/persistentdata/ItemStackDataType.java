@@ -5,7 +5,7 @@ import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemStackDataType implements PersistentDataType<byte[], ItemStack> {
+public final class ItemStackDataType implements PersistentDataType<byte[], ItemStack> {
     @Override
     public @NotNull Class<byte[]> getPrimitiveType() {
         return byte[].class;

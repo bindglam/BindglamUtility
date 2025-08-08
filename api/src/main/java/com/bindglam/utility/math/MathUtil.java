@@ -3,7 +3,10 @@ package com.bindglam.utility.math;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.util.RGBLike;
 
-public class MathUtil {
+public final class MathUtil {
+    private MathUtil() {
+    }
+
     public static double lerp(double a, double b, double aT, double bT) {
         return aT * a + bT * b;
     }
