@@ -1,30 +1,32 @@
 package com.bindglam.utility.manager
 
 import com.bindglam.utility.playerdata.*
+import org.bukkit.inventory.ItemStack
+import java.time.LocalDateTime
 
 class VariableParserManagerImpl : VariableParserManager {
-    private val parsers = ArrayList<VariableParser<*>>()
+    private val parsers = HashMap<Class<*>, VariableParser<*>>()
 
     private val listParser = ListParser()
     private val mapParser = MapParser()
 
     init {
-        register(ItemStackParser())
-        register(DateParser())
+        register(ItemStack::class.java, ItemStackParser())
+        register(LocalDateTime::class.java, DateParser())
     }
 
-    override fun register(parser: VariableParser<*>) {
-        parsers.add(parser)
+    override fun <T> register(clazz: Class<T>, parser: VariableParser<T>) {
+        parsers[clazz] = parser
     }
 
     override fun parseToJSON(`object`: Any?): Any? {
         if(`object` == null)
             return null
 
-        for (parser in parsers) {
-            val result = parser.parseToJSON(`object`) ?: continue
-
-            return result
+        for (clazz in parsers.keys) {
+            if(clazz.isInstance(`object`)) {
+                return parsers[clazz]!!.parseToJSON(`object`) ?: continue
+            }
         }
 
         return listParser.parseToJSON(`object`) ?: mapParser.parseToJSON(`object`) ?: `object`
@@ -34,7 +36,7 @@ class VariableParserManagerImpl : VariableParserManager {
         if(json == null)
             return null
 
-        for (parser in parsers) {
+        for (parser in parsers.values) {
             val result = parser.parseFromJSON(json)
 
             if(result != null)

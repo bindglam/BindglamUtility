@@ -4,7 +4,7 @@ import com.bindglam.utility.playerdata.VariableParser;
 import org.jetbrains.annotations.Nullable;
 
 public interface VariableParserManager {
-    void register(VariableParser<?> parser);
+    <T> void register(Class<T> clazz, VariableParser<T> parser);
 
     @Nullable Object parseToJSON(@Nullable Object object);
 
