@@ -12,6 +12,13 @@ import com.bindglam.utility.messaging.PluginMessenger
 import com.bindglam.utility.messaging.PluginMessengerImpl
 import com.bindglam.utility.nms.PacketDispatcher
 import com.bindglam.utility.utils.MinecraftVersion
+import dev.jorel.commandapi.CommandAPI
+import dev.jorel.commandapi.CommandAPIBukkitConfig
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.CommandPermission
+import dev.jorel.commandapi.executors.CommandExecutor
+import net.kyori.adventure.text.Component
+import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.messaging.PluginMessageListener
 import java.util.*
@@ -25,8 +32,16 @@ class BindglamUtilityImpl : JavaPlugin(), BindglamUtilityPlugin {
     private lateinit var variableParserManager: VariableParserManager
     private lateinit var guiRendererManager: GuiRendererManager
 
+    override fun onLoad() {
+        CommandAPI.onLoad(CommandAPIBukkitConfig(this))
+
+        registerCommands()
+    }
+
     override fun onEnable() {
         saveDefaultConfig()
+
+        CommandAPI.onEnable()
 
         BindglamUtility.setInstance(this)
 
@@ -73,6 +88,31 @@ class BindglamUtilityImpl : JavaPlugin(), BindglamUtilityPlugin {
                 
                 """.trimIndent()
         )
+    }
+
+    override fun onDisable() {
+        CommandAPI.onDisable()
+    }
+
+    private fun registerCommands() {
+        CommandAPICommand("binglamutility")
+            .withAliases("bu")
+            .withPermission(CommandPermission.OP)
+            .withSubcommands(
+                CommandAPICommand("playerdata")
+                    .withSubcommands(
+                        CommandAPICommand("reload")
+                            .executes(CommandExecutor { sender, args ->
+                                Bukkit.getAsyncScheduler().runNow(this) {
+                                    sender.sendMessage(Component.text("데이터 리로드 중..."))
+                                    playerDataManager.disposeAll(true)
+                                    playerDataManager.loadAll(true)
+                                    sender.sendMessage(Component.text("데이터 리로드 완료"))
+                                }
+                            })
+                    )
+            )
+            .register()
     }
 
     override fun getJavaPlugin(): JavaPlugin = this
