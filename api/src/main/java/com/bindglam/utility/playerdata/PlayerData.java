@@ -1,5 +1,6 @@
 package com.bindglam.utility.playerdata;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,15 +16,27 @@ public interface PlayerData {
 
     UUID getUniqueId();
 
+    <T> @Nullable T getVariable(@NotNull NamespacedKey key);
+
+    @Deprecated
     <T> @Nullable T getVariable(@NotNull String name);
 
+    void setVariable(@NotNull NamespacedKey key, @Nullable Object value);
+
+    @Deprecated
     void setVariable(@NotNull String name, @Nullable Object value);
 
+    boolean hasVariable(@NotNull NamespacedKey key);
+
+    @Deprecated
     boolean hasVariable(@NotNull String name);
 
+    void removeVariable(@NotNull NamespacedKey key);
+
+    @Deprecated
     void removeVariable(@NotNull String name);
 
-    Map<String, Object> getVariables();
+    Map<NamespacedKey, Object> getVariables();
 
     boolean isLoading();
 

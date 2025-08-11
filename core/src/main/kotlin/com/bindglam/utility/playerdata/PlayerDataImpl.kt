@@ -6,6 +6,7 @@ import com.bindglam.utility.BindglamUtility
 import com.bindglam.utility.events.BindglamPlayerDataLoadEvent
 import com.bindglam.utility.events.BindglamPlayerDataSaveEvent
 import org.bukkit.Bukkit
+import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import java.sql.Connection
@@ -15,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Consumer
 
 class PlayerDataImpl(private val plugin: Plugin, private val uuid: UUID) : PlayerData {
-    private val variables = HashMap<String, Any?>()
+    private val variables = HashMap<NamespacedKey, Any?>()
 
     private val isLoading = AtomicBoolean(true)
 
@@ -31,7 +32,7 @@ class PlayerDataImpl(private val plugin: Plugin, private val uuid: UUID) : Playe
             while (rs.next()) {
                 val dataJson = JSON.parse(rs.getString("data")) as JSONObject
 
-                dataJson.forEach { (name: String, valueJson: Any) -> variables[name] = BindglamUtility.getInstance().variableParserManager.parseFromJSON(valueJson) }
+                dataJson.forEach { (name: String, valueJson: Any) -> variables[NamespacedKey.fromString(name)!!] = BindglamUtility.getInstance().variableParserManager.parseFromJSON(valueJson) }
             }
 
             rs.close()
@@ -62,8 +63,8 @@ class PlayerDataImpl(private val plugin: Plugin, private val uuid: UUID) : Playe
 
             val dataJson = JSONObject()
 
-            variables.forEach { (name: String?, value: Any?) ->
-                dataJson[name] = BindglamUtility.getInstance().variableParserManager.parseToJSON(value)
+            variables.forEach { (key: NamespacedKey, value: Any?) ->
+                dataJson[key.toString()] = BindglamUtility.getInstance().variableParserManager.parseToJSON(value)
             }
 
             val connection: Connection = BindglamUtility.database().getConnection()
@@ -97,23 +98,35 @@ class PlayerDataImpl(private val plugin: Plugin, private val uuid: UUID) : Playe
         return uuid
     }
 
-    override fun <T> getVariable(name: String): T? {
-        return variables[name] as T?
+    override fun <T : Any?> getVariable(key: NamespacedKey): T? = variables[key] as T?
+
+    @Deprecated("Deprecated in Java")
+    override fun <T> getVariable(name: String): T? = variables[NamespacedKey(plugin, name)] as T?
+
+    override fun setVariable(key: NamespacedKey, value: Any?) {
+        variables[key] = value
     }
 
+    @Deprecated("Deprecated in Java")
     override fun setVariable(name: String, value: Any?) {
-        variables[name] = value
+        variables[NamespacedKey(plugin, name)] = value
     }
 
-    override fun hasVariable(name: String): Boolean {
-        return variables.containsKey(name)
+    override fun hasVariable(key: NamespacedKey): Boolean = variables.containsKey(key)
+
+    @Deprecated("Deprecated in Java")
+    override fun hasVariable(name: String): Boolean = variables.containsKey(NamespacedKey(plugin, name))
+
+    override fun removeVariable(key: NamespacedKey) {
+        variables.remove(key)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun removeVariable(name: String) {
-        variables.remove(name)
+        variables.remove(NamespacedKey(plugin, name))
     }
 
-    override fun getVariables(): Map<String, Any?> {
+    override fun getVariables(): Map<NamespacedKey, Any?> {
         return java.util.Map.copyOf(variables)
     }
 
