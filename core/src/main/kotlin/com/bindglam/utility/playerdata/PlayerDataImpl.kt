@@ -52,16 +52,11 @@ class PlayerDataImpl(private val plugin: Plugin, private val uuid: UUID) : Playe
     }
 
     override fun dispose(async: Boolean) {
-        if (async) Bukkit.getAsyncScheduler().runNow(plugin) { _ -> disposeInternal(true) }
-        else disposeInternal(false)
-    }
+        val player = player
 
-    private fun disposeInternal(async: Boolean) {
+        if (player != null) BindglamPlayerDataSaveEvent(player, this, async).callEvent()
+
         try {
-            val player = player
-
-            if (player != null) BindglamPlayerDataSaveEvent(player, this, async).callEvent()
-
             val dataJson = JSONObject()
 
             variableHolder.variables.forEach { (key: NamespacedKey, value: Any?) ->
@@ -95,17 +90,8 @@ class PlayerDataImpl(private val plugin: Plugin, private val uuid: UUID) : Playe
         }
     }
 
-    override fun getUniqueId(): UUID {
-        return uuid
-    }
-
+    override fun getUniqueId(): UUID = uuid
     override fun getVariableHolder(): VariableHolder = variableHolder
-
-    override fun isLoading(): Boolean {
-        return isLoading.get()
-    }
-
-    override fun getPlayer(): Player? {
-        return Bukkit.getPlayer(uuid)
-    }
+    override fun isLoading(): Boolean = isLoading.get()
+    override fun getPlayer(): Player? = Bukkit.getPlayer(uuid)
 }
