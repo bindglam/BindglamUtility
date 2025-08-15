@@ -19,4 +19,8 @@ class ItemsAdderCompatibility : Compatibility {
 
         return CustomStack.getInstance(id)!!.itemStack
     }
+
+    override fun getCustomItemIdByItemStack(itemStack: ItemStack?): String? {
+        return CustomStack.byItemStack(itemStack)?.namespacedID
+    }
 }

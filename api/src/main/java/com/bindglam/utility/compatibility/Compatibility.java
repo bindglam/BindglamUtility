@@ -12,6 +12,8 @@ public interface Compatibility {
 
     @Nullable ItemStack getCustomItemOrNull(String id);
 
+    @Nullable String getCustomItemIdByItemStack(@Nullable ItemStack itemStack);
+
     default @NotNull Component getGlyph(String id, int offsetX) {
         return Objects.requireNonNull(getGlyphOrNull(id, offsetX));
     }

@@ -26,4 +26,9 @@ public class NexoCompatibility implements Compatibility {
 
         return Objects.requireNonNull(NexoItems.itemFromId(id)).build();
     }
+
+    @Override
+    public @Nullable String getCustomItemIdByItemStack(@Nullable ItemStack itemStack) {
+        return NexoItems.idFromItem(itemStack);
+    }
 }
