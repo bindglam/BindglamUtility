@@ -54,4 +54,16 @@ public final class MathUtil {
 
         return lerp(b1, b2, (t2 - t) / (t2 - t1), (t - t1) / (t2 - t1));
     }
+
+    public static int clamp(int a, int min, int max) {
+        return Math.max(Math.min(a, max), min);
+    }
+
+    public static float clamp(float a, float min, float max) {
+        return Math.max(Math.min(a, max), min);
+    }
+
+    public static double clamp(double a, double min, double max) {
+        return Math.max(Math.min(a, max), min);
+    }
 }
