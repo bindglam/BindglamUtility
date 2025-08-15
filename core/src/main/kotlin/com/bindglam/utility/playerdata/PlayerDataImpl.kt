@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Consumer
 
 class PlayerDataImpl(private val plugin: Plugin, private val uuid: UUID) : PlayerData {
-    private val variables = HashMap<NamespacedKey, Any?>()
+    private val variableHolder = VariableHolderImpl(plugin)
 
     private val isLoading = AtomicBoolean(true)
 
@@ -32,7 +32,8 @@ class PlayerDataImpl(private val plugin: Plugin, private val uuid: UUID) : Playe
             while (rs.next()) {
                 val dataJson = JSON.parse(rs.getString("data")) as JSONObject
 
-                dataJson.forEach { (name: String, valueJson: Any) -> variables[NamespacedKey.fromString(name)!!] = BindglamUtility.getInstance().variableParserManager.parseFromJSON(valueJson) }
+                dataJson.forEach { (name: String, valueJson: Any) ->
+                    variableHolder.setVariable(NamespacedKey.fromString(name)!!, BindglamUtility.getInstance().variableParserManager.parseFromJSON(valueJson)) }
             }
 
             rs.close()
@@ -63,7 +64,7 @@ class PlayerDataImpl(private val plugin: Plugin, private val uuid: UUID) : Playe
 
             val dataJson = JSONObject()
 
-            variables.forEach { (key: NamespacedKey, value: Any?) ->
+            variableHolder.variables.forEach { (key: NamespacedKey, value: Any?) ->
                 dataJson[key.toString()] = BindglamUtility.getInstance().variableParserManager.parseToJSON(value)
             }
 
@@ -98,37 +99,7 @@ class PlayerDataImpl(private val plugin: Plugin, private val uuid: UUID) : Playe
         return uuid
     }
 
-    override fun <T : Any?> getVariable(key: NamespacedKey): T? = variables[key] as T?
-
-    @Deprecated("Deprecated in Java")
-    override fun <T> getVariable(name: String): T? = variables[NamespacedKey(plugin, name)] as T?
-
-    override fun setVariable(key: NamespacedKey, value: Any?) {
-        variables[key] = value
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun setVariable(name: String, value: Any?) {
-        variables[NamespacedKey(plugin, name)] = value
-    }
-
-    override fun hasVariable(key: NamespacedKey): Boolean = variables.containsKey(key)
-
-    @Deprecated("Deprecated in Java")
-    override fun hasVariable(name: String): Boolean = variables.containsKey(NamespacedKey(plugin, name))
-
-    override fun removeVariable(key: NamespacedKey) {
-        variables.remove(key)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun removeVariable(name: String) {
-        variables.remove(NamespacedKey(plugin, name))
-    }
-
-    override fun getVariables(): Map<NamespacedKey, Any?> {
-        return java.util.Map.copyOf(variables)
-    }
+    override fun getVariableHolder(): VariableHolder = variableHolder
 
     override fun isLoading(): Boolean {
         return isLoading.get()
