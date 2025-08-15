@@ -1,10 +1,11 @@
 package com.bindglam.utility.playerdata
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.Plugin
 
 class VariableHolderImpl(private val plugin: Plugin) : VariableHolder {
-    private val variables = HashMap<NamespacedKey, Any?>()
+    private val variables = Object2ObjectLinkedOpenHashMap<NamespacedKey, Any?>()
 
     override fun <T> getVariable(key: NamespacedKey): T? = variables[key] as T?
 
