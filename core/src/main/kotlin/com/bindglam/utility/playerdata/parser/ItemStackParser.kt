@@ -1,8 +1,10 @@
-package com.bindglam.utility.playerdata
+package com.bindglam.utility.playerdata.parser
 
 import com.alibaba.fastjson2.JSONObject
+import com.bindglam.utility.playerdata.VariableParser
 import org.bukkit.inventory.ItemStack
 import java.util.*
+import kotlin.collections.get
 
 class ItemStackParser : VariableParser<ItemStack> {
     override fun parseToJSON(obj: Any): Any? {

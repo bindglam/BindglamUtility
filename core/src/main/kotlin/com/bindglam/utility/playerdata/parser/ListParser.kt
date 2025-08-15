@@ -1,7 +1,8 @@
-package com.bindglam.utility.playerdata
+package com.bindglam.utility.playerdata.parser
 
 import com.alibaba.fastjson2.JSONArray
 import com.bindglam.utility.BindglamUtility
+import com.bindglam.utility.playerdata.VariableParser
 
 
 class ListParser : VariableParser<List<*>> {

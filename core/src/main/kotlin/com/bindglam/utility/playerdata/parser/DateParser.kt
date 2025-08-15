@@ -1,8 +1,10 @@
-package com.bindglam.utility.playerdata
+package com.bindglam.utility.playerdata.parser
 
 import com.alibaba.fastjson2.JSONObject
+import com.bindglam.utility.playerdata.VariableParser
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.collections.get
 
 
 class DateParser : VariableParser<LocalDateTime> {
