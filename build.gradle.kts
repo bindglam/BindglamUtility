@@ -41,6 +41,7 @@ tasks {
         prefix("dev.jorel.commandapi")
         prefix("com.zaxxer.hikari")
         prefix("com.alibaba.fastjson2")
-        prefix("redis.clients.jedis")
+        prefix("redis.clients")
+        prefix("org.apache.commons")
     }
 }
