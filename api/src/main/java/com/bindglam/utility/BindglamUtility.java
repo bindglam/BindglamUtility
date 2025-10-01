@@ -1,12 +1,14 @@
 package com.bindglam.utility;
 
 import com.bindglam.utility.compatibility.Compatibility;
-import com.bindglam.utility.database.Database;
+import com.bindglam.utility.database.RedisDatabase;
+import com.bindglam.utility.database.SQLDatabase;
 import com.bindglam.utility.manager.GuiRendererManager;
 import com.bindglam.utility.manager.PlayerDataManager;
 import com.bindglam.utility.messaging.PluginMessenger;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -33,8 +35,17 @@ public final class BindglamUtility {
         return BindglamUtility.instance.getPluginMessenger();
     }
 
-    public static Database database() {
-        return BindglamUtility.instance.getDatabase();
+    public static SQLDatabase sqlDatabase() {
+        return BindglamUtility.instance.getSQLDatabase();
+    }
+
+    public static @Nullable RedisDatabase redisDatabase() {
+        return BindglamUtility.instance.getRedisDatabase();
+    }
+
+    @Deprecated
+    public static SQLDatabase database() {
+        return sqlDatabase();
     }
 
     public static PlayerDataManager playerDataManager() {

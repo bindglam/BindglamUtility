@@ -6,7 +6,7 @@ import org.bukkit.configuration.ConfigurationSection
 import java.sql.Connection
 import java.sql.SQLException
 
-class MySQLDatabase : Database {
+class MySQLDatabase : SQLDatabase {
     private var hikariDS: HikariDataSource? = null
 
     override fun connect(config: ConfigurationSection?) {

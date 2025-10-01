@@ -3,8 +3,10 @@ package com.bindglam.utility
 import com.bindglam.utility.compatibility.Compatibility
 import com.bindglam.utility.compatibility.ItemsAdderCompatibility
 import com.bindglam.utility.compatibility.NexoCompatibility
-import com.bindglam.utility.database.Database
 import com.bindglam.utility.database.MySQLDatabase
+import com.bindglam.utility.database.RedisDatabase
+import com.bindglam.utility.database.RedisDatabaseImpl
+import com.bindglam.utility.database.SQLDatabase
 import com.bindglam.utility.database.SQLiteDatabase
 import com.bindglam.utility.listeners.PlayerListener
 import com.bindglam.utility.manager.*
@@ -27,7 +29,8 @@ class BindglamUtilityImpl : JavaPlugin(), BindglamUtilityPlugin {
     private lateinit var compatibility: Compatibility
     private lateinit var pluginMessenger: PluginMessenger
     private lateinit var packetDispatcher: PacketDispatcher
-    private lateinit var database: Database
+    private lateinit var sqlDatabase: SQLDatabase
+    private var redisDatabase: RedisDatabase? = null
     private lateinit var playerDataManager: PlayerDataManager
     private lateinit var variableParserManager: VariableParserManager
     private lateinit var guiRendererManager: GuiRendererManager
@@ -60,11 +63,12 @@ class BindglamUtilityImpl : JavaPlugin(), BindglamUtilityPlugin {
             MinecraftVersion.V1_21_8 -> com.bindglam.utility.nms.v1_21_R5.PacketDispatcherImpl()
             else -> throw IllegalStateException("Unexpected version: ${MinecraftVersion.CURRENT}")
         }
-        database = when (Objects.requireNonNull(config.getString("database.type"))) {
+        sqlDatabase = when (Objects.requireNonNull(config.getString("database.type"))) {
             "SQLITE" -> SQLiteDatabase()
             "MYSQL" -> MySQLDatabase()
             else -> throw IllegalStateException("Unexpected value: " + config.getString("database.type"))
         }.apply { connect(config.getConfigurationSection("database.${config.getString("database.type")!!.lowercase(Locale.getDefault())}")) }
+        redisDatabase = if(config.getBoolean("database.redis.enabled")) RedisDatabaseImpl().also { it.connect(config.getConfigurationSection("database.redis")) } else null
         playerDataManager = PlayerDataManagerImpl(this)
         variableParserManager = VariableParserManagerImpl()
         guiRendererManager = GuiRendererManagerImpl(this)
@@ -119,7 +123,8 @@ class BindglamUtilityImpl : JavaPlugin(), BindglamUtilityPlugin {
     override fun getCompatibility(): Compatibility = compatibility
     override fun getPluginMessenger(): PluginMessenger = pluginMessenger
     override fun getPacketDispatcher(): PacketDispatcher = packetDispatcher
-    override fun getDatabase(): Database = database
+    override fun getSQLDatabase(): SQLDatabase = sqlDatabase
+    override fun getRedisDatabase(): RedisDatabase? = redisDatabase
     override fun getPlayerDataManager(): PlayerDataManager = playerDataManager
     override fun getVariableParserManager(): VariableParserManager = variableParserManager
     override fun getGuiRendererManager(): GuiRendererManager = guiRendererManager
