@@ -16,11 +16,11 @@ class PlayerDataManagerImpl(private val plugin: Plugin) : PlayerDataManager {
 
     init {
         try {
-            val connection: Connection = BindglamUtility.database().getConnection()
+            val connection: Connection = BindglamUtility.sqlDatabase().getConnection()
             val statement = connection.createStatement()
             statement.execute("CREATE TABLE IF NOT EXISTS bu_playerdata(uuid VARCHAR(36) PRIMARY KEY, data JSON)")
             statement.close()
-            BindglamUtility.database().evictConnection(connection)
+            BindglamUtility.sqlDatabase().evictConnection(connection)
         } catch (e: SQLException) {
             throw RuntimeException(e)
         }

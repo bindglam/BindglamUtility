@@ -24,7 +24,7 @@ class PlayerDataImpl(private val plugin: Plugin, private val uuid: UUID) : Playe
         val player = player
 
         try {
-            val connection: Connection = BindglamUtility.database().getConnection()
+            val connection: Connection = BindglamUtility.sqlDatabase().getConnection()
             val statement = connection.prepareStatement("SELECT * FROM bu_playerdata WHERE uuid = ?")
             statement.setString(1, uuid.toString())
             val rs = statement.executeQuery()
@@ -38,7 +38,7 @@ class PlayerDataImpl(private val plugin: Plugin, private val uuid: UUID) : Playe
 
             rs.close()
             statement.close()
-            BindglamUtility.database().evictConnection(connection)
+            BindglamUtility.sqlDatabase().evictConnection(connection)
         } catch (e: SQLException) {
             throw RuntimeException(e)
         }
@@ -63,7 +63,7 @@ class PlayerDataImpl(private val plugin: Plugin, private val uuid: UUID) : Playe
                 dataJson[key.toString()] = BindglamUtility.getInstance().variableParserManager.parseToJSON(value)
             }
 
-            val connection: Connection = BindglamUtility.database().getConnection()
+            val connection: Connection = BindglamUtility.sqlDatabase().getConnection()
             val statement1 = connection.prepareStatement("SELECT * FROM bu_playerdata WHERE uuid = ?")
             statement1.setString(1, uuid.toString())
             val rs1 = statement1.executeQuery()
@@ -84,7 +84,7 @@ class PlayerDataImpl(private val plugin: Plugin, private val uuid: UUID) : Playe
 
             rs1.close()
             statement1.close()
-            BindglamUtility.database().evictConnection(connection)
+            BindglamUtility.sqlDatabase().evictConnection(connection)
         } catch (e: SQLException) {
             throw RuntimeException(e)
         }
