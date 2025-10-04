@@ -1,7 +1,6 @@
 package com.bindglam.utility.database
 
 import org.bukkit.configuration.ConfigurationSection
-import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
 import redis.clients.jedis.JedisPoolConfig
 
@@ -20,5 +19,5 @@ class RedisDatabaseImpl : RedisDatabase {
         pool.close()
     }
 
-    override fun getResource(): Jedis = pool.resource
+    override fun getResource(): JedisWrapper = JedisWrapper(pool.resource)
 }
