@@ -4,7 +4,6 @@ import com.bindglam.utility.compatibility.Compatibility;
 import com.bindglam.utility.database.RedisDatabase;
 import com.bindglam.utility.database.SQLDatabase;
 import com.bindglam.utility.manager.GuiRendererManager;
-import com.bindglam.utility.manager.PlayerDataManager;
 import com.bindglam.utility.messaging.PluginMessenger;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -46,10 +45,6 @@ public final class BindglamUtility {
     @Deprecated
     public static SQLDatabase database() {
         return sqlDatabase();
-    }
-
-    public static PlayerDataManager playerDataManager() {
-        return BindglamUtility.instance.getPlayerDataManager();
     }
 
     public static GuiRendererManager guiRendererManager() {

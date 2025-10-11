@@ -31,8 +31,6 @@ class BindglamUtilityImpl : JavaPlugin(), BindglamUtilityPlugin {
     private lateinit var packetDispatcher: PacketDispatcher
     private lateinit var sqlDatabase: SQLDatabase
     private var redisDatabase: RedisDatabase? = null
-    private lateinit var playerDataManager: PlayerDataManager
-    private lateinit var variableParserManager: VariableParserManager
     private lateinit var guiRendererManager: GuiRendererManager
 
     override fun onLoad() {
@@ -69,8 +67,6 @@ class BindglamUtilityImpl : JavaPlugin(), BindglamUtilityPlugin {
             else -> throw IllegalStateException("Unexpected value: " + config.getString("database.type"))
         }.apply { connect(config.getConfigurationSection("database.${config.getString("database.type")!!.lowercase(Locale.getDefault())}")) }
         redisDatabase = if(config.getBoolean("database.redis.enabled")) RedisDatabaseImpl().also { it.connect(config.getConfigurationSection("database.redis")) } else null
-        playerDataManager = PlayerDataManagerImpl(this)
-        variableParserManager = VariableParserManagerImpl()
         guiRendererManager = GuiRendererManagerImpl(this)
 
         server.messenger.registerOutgoingPluginChannel(this, "BungeeCord")
@@ -103,18 +99,6 @@ class BindglamUtilityImpl : JavaPlugin(), BindglamUtilityPlugin {
             .withAliases("bu")
             .withPermission(CommandPermission.OP)
             .withSubcommands(
-                CommandAPICommand("playerdata")
-                    .withSubcommands(
-                        CommandAPICommand("reload")
-                            .executes(CommandExecutor { sender, args ->
-                                Bukkit.getAsyncScheduler().runNow(this) {
-                                    sender.sendMessage(Component.text("데이터 리로드 중..."))
-                                    playerDataManager.disposeAll(true)
-                                    playerDataManager.loadAll(true)
-                                    sender.sendMessage(Component.text("데이터 리로드 완료"))
-                                }
-                            })
-                    )
             )
             .register()
     }
@@ -125,7 +109,5 @@ class BindglamUtilityImpl : JavaPlugin(), BindglamUtilityPlugin {
     override fun getPacketDispatcher(): PacketDispatcher = packetDispatcher
     override fun getSQLDatabase(): SQLDatabase = sqlDatabase
     override fun getRedisDatabase(): RedisDatabase? = redisDatabase
-    override fun getPlayerDataManager(): PlayerDataManager = playerDataManager
-    override fun getVariableParserManager(): VariableParserManager = variableParserManager
     override fun getGuiRendererManager(): GuiRendererManager = guiRendererManager
 }
