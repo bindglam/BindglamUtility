@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 
-public class ImageComponent extends OffsetComponent {
+public class ImageComponent extends UIComponent {
     private String glyphId;
     private TextColor color = NamedTextColor.WHITE;
 
@@ -30,7 +30,7 @@ public class ImageComponent extends OffsetComponent {
     }
 
     @Override
-    public Component build() {
+    public Component build(int offset) {
         String id = getAnimator().getGlyph();
         if(id == null)
             id = glyphId;
@@ -39,6 +39,11 @@ public class ImageComponent extends OffsetComponent {
         if(glyphColor == null)
             glyphColor = color;
 
-        return BindglamUtility.getInstance().getCompatibility().getGlyph(id, getOffset()+getAnimator().getOffset()).color(glyphColor);
+        return BindglamUtility.getInstance().getCompatibility().getGlyph(id, getOffset()+getAnimator().getOffset()+offset).color(glyphColor);
+    }
+
+    @Override
+    public int width() {
+        return BindglamUtility.compatibility().getGlyphWidth(glyphId);
     }
 }

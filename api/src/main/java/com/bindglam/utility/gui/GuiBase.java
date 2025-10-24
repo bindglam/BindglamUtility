@@ -24,6 +24,7 @@ import java.util.*;
 public abstract class GuiBase implements InventoryHolder {
     private final Inventory inv;
     private final Component title;
+    private int titleGlyphWidth = 0;
 
     private final int tickInterval;
 
@@ -43,6 +44,15 @@ public abstract class GuiBase implements InventoryHolder {
 
     public GuiBase(int size, Component title){
         this(size, title, -1);
+    }
+
+    public GuiBase(int size, String glyphId, int offset, int updateTick){
+        this(size, BindglamUtility.compatibility().getGlyph(glyphId, offset), updateTick);
+        this.titleGlyphWidth = BindglamUtility.compatibility().getGlyphWidth(glyphId);
+    }
+
+    public GuiBase(int size, String glyphId, int offset){
+        this(size, glyphId, offset, -1);
     }
 
     public void onOpen(InventoryOpenEvent event){
@@ -92,6 +102,10 @@ public abstract class GuiBase implements InventoryHolder {
 
     public Component getTitle() {
         return title;
+    }
+
+    public int getTitleGlyphWidth() {
+        return titleGlyphWidth;
     }
 
     public int getTickInterval() {

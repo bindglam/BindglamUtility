@@ -20,6 +20,14 @@ public class NexoCompatibility implements Compatibility {
     }
 
     @Override
+    public int getGlyphWidth(String id) {
+        if(NexoPlugin.instance().fontManager().glyphFromID(id) == null)
+            return 0;
+
+        return Objects.requireNonNull(NexoPlugin.instance().fontManager().glyphFromID(id)).getHeight();
+    }
+
+    @Override
     public @Nullable ItemStack getCustomItemOrNull(String id) {
         if(!NexoItems.exists(id))
             return null;

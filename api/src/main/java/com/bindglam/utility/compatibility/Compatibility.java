@@ -10,6 +10,8 @@ import java.util.Objects;
 public interface Compatibility {
     @Nullable Component getGlyphOrNull(String id, int offsetX);
 
+    int getGlyphWidth(String id);
+
     @Nullable ItemStack getCustomItemOrNull(String id);
 
     @Nullable String getCustomItemIdByItemStack(@Nullable ItemStack itemStack);

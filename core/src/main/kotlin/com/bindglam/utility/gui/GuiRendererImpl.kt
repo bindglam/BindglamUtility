@@ -55,7 +55,13 @@ class GuiRendererImpl(private val plugin: Plugin, private val gui: GuiBase) : Gu
 
     private fun updateUIComponent() {
         var title = gui.title
-        gui.uiComponents.values.forEach { component -> title = title.append(component.build()) }
+
+        var offset = -gui.titleGlyphWidth
+        gui.uiComponents.values.forEach { component -> {
+            title = title.append(component.build(offset))
+
+            offset -= component.width()
+        } }
 
         for (player in getViewers()) {
             if (player == null) continue

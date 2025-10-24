@@ -13,6 +13,13 @@ class ItemsAdderCompatibility : Compatibility {
         return Component.text(FontImageWrapper.instance(id).setOffset(offsetX).string)
     }
 
+    override fun getGlyphWidth(id: String): Int {
+        if (!FontImageWrapper.getNamespacedIdsInRegistry().contains(id))
+            return 0
+
+        return FontImageWrapper.instance(id).width
+    }
+
     override fun getCustomItemOrNull(id: String): ItemStack? {
         if (!CustomStack.isInRegistry(id))
             return null
