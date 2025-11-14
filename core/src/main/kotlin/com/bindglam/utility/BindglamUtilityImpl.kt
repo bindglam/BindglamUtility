@@ -1,6 +1,7 @@
 package com.bindglam.utility
 
 import com.bindglam.utility.compatibility.Compatibility
+import com.bindglam.utility.compatibility.CraftEngineCompatibility
 import com.bindglam.utility.compatibility.ItemsAdderCompatibility
 import com.bindglam.utility.compatibility.NexoCompatibility
 import com.bindglam.utility.database.MySQLDatabase
@@ -50,8 +51,10 @@ class BindglamUtilityImpl : JavaPlugin(), BindglamUtilityPlugin {
             ItemsAdderCompatibility()
         } else if (server.pluginManager.isPluginEnabled("Nexo")) {
             NexoCompatibility()
+        } else if (server.pluginManager.isPluginEnabled("CraftEngine")) {
+            CraftEngineCompatibility()
         } else {
-            logger.severe("ItemsAdder or Nexo is not found! Disabling plugin...")
+            logger.severe("ItemsAdder, Nexo or CraftEngine is not found! Disabling plugin...")
             server.pluginManager.disablePlugin(this)
             return
         }
@@ -95,12 +98,12 @@ class BindglamUtilityImpl : JavaPlugin(), BindglamUtilityPlugin {
     }
 
     private fun registerCommands() {
-        CommandAPICommand("binglamutility")
-            .withAliases("bu")
-            .withPermission(CommandPermission.OP)
-            .withSubcommands(
-            )
-            .register()
+//        CommandAPICommand("binglamutility")
+//            .withAliases("bu")
+//            .withPermission(CommandPermission.OP)
+//            .withSubcommands(
+//            )
+//            .register()
     }
 
     override fun getJavaPlugin(): JavaPlugin = this
