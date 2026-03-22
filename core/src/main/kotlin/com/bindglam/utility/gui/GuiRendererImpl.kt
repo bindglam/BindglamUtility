@@ -2,7 +2,9 @@ package com.bindglam.utility.gui
 
 import com.bindglam.utility.BindglamUtility
 import com.bindglam.utility.events.BindglamInventoryCloseEvent
+import com.bindglam.utility.utils.InteractionGuard
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -34,9 +36,9 @@ class GuiRendererImpl(private val plugin: Plugin, private val gui: GuiBase) : Gu
         uiUpdateTask = Bukkit.getAsyncScheduler().runAtFixedRate(plugin, { task ->
             var shouldUpdateUI = gui.isChanged
 
-            val list = gui.uiComponents.values.stream().toList()
-            for (i in gui.uiComponents.size - 1 downTo 0) {
-                val component = list[i]
+            val components = gui.uiComponents.values.toList()
+            for (i in components.size - 1 downTo 0) {
+                val component = components[i]
 
                 if (component.animator.animation != null) {
                     shouldUpdateUI = true
@@ -55,7 +57,11 @@ class GuiRendererImpl(private val plugin: Plugin, private val gui: GuiBase) : Gu
 
     private fun updateUIComponent() {
         var title = gui.title
-        gui.uiComponents.values.forEach { component -> title = title.append(component.build()) }
+        val components = gui.uiComponents.values.toList()
+        components.forEach { component -> title = title.append(component.build()) }
+        gui.tailStrings.values.forEach { tailString ->
+            title = title.append(Component.text(tailString))
+        }
 
         for (player in getViewers()) {
             if (player == null) continue
@@ -79,6 +85,11 @@ class GuiRendererImpl(private val plugin: Plugin, private val gui: GuiBase) : Gu
         val player = event.whoClicked as Player
         val inventory = event.view.topInventory
         if (inventory.getHolder(false) != gui) return
+
+        if (InteractionGuard.isGuiClickOnCooldown(player.uniqueId)) {
+            event.isCancelled = true
+            return
+        }
 
         gui.onClick(event)
     }

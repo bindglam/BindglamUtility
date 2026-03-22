@@ -28,6 +28,7 @@ public abstract class GuiBase implements InventoryHolder {
     private final int tickInterval;
 
     private final Map<String, UIComponent> uiComponents = new LinkedHashMap<>();
+    private final Map<String, String> tailStrings = new LinkedHashMap<>();
     private final Map<Integer, Map<String, Object>> itemData = new HashMap<>();
 
     private GuiRenderer renderer = null;
@@ -99,7 +100,11 @@ public abstract class GuiBase implements InventoryHolder {
     }
 
     public @Unmodifiable Map<String, UIComponent> getUIComponents() {
-        return Map.copyOf(uiComponents);
+        return Collections.unmodifiableMap(new LinkedHashMap<>(uiComponents));
+    }
+
+    public @Unmodifiable Map<String, String> getTailStrings() {
+        return Collections.unmodifiableMap(new LinkedHashMap<>(tailStrings));
     }
 
     public void addUIComponent(String id, UIComponent uiComponent){
@@ -110,6 +115,24 @@ public abstract class GuiBase implements InventoryHolder {
 
     public void removeUIComponent(String id) {
         uiComponents.remove(id);
+
+        isChanged = true;
+    }
+
+    public void addTailString(String id, String value) {
+        tailStrings.put(id, value);
+
+        isChanged = true;
+    }
+
+    public String addTailString(String value) {
+        String id = UUID.randomUUID().toString();
+        addTailString(id, value);
+        return id;
+    }
+
+    public void removeTailString(String id) {
+        tailStrings.remove(id);
 
         isChanged = true;
     }

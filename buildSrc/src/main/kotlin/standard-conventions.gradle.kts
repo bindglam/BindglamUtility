@@ -12,7 +12,6 @@ repositories {
     maven("https://maven.devs.beer/")
     maven("https://repo.nexomc.com/releases")
     maven("https://repo.momirealms.net/releases/")
-    maven("https://repo.momirealms.net/snapshots/")
     maven("https://repo.codemc.io/repository/maven-releases/")
     maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://repo.codemc.org/repository/maven-public/")
@@ -21,8 +20,8 @@ repositories {
 dependencies {
     compileOnly("dev.lone:api-itemsadder:4.0.10")
     compileOnly("com.nexomc:nexo:1.17.0")
-    compileOnly("net.momirealms:craft-engine-core:0.0.66.19-SNAPSHOT")
-    compileOnly("net.momirealms:craft-engine-bukkit:0.0.66.19-SNAPSHOT")
+    compileOnly("net.momirealms:craft-engine-core:0.0.67")
+    compileOnly("net.momirealms:craft-engine-bukkit:0.0.67")
 }
 
 tasks {

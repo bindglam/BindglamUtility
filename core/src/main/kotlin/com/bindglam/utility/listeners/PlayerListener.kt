@@ -2,12 +2,14 @@ package com.bindglam.utility.listeners
 
 import com.bindglam.utility.events.BindglamInventoryCloseEvent
 import com.bindglam.utility.gui.GuiBase
+import com.bindglam.utility.utils.InteractionGuard
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.Plugin
 
 class PlayerListener(private val plugin: Plugin) : Listener {
@@ -33,5 +35,10 @@ class PlayerListener(private val plugin: Plugin) : Listener {
                 }
             }, 1L)
         }
+    }
+
+    @EventHandler
+    fun onPlayerQuit(event: PlayerQuitEvent) {
+        InteractionGuard.clearGuiClickCooldown(event.player.uniqueId)
     }
 }
